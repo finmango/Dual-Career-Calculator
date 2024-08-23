@@ -20,13 +20,12 @@
         th { background-color: #f2f2f2; }
         .section { margin-bottom: 30px; border: 1px solid #ddd; padding: 20px; border-radius: 4px; }
         .header { margin-bottom: 20px; }
-        .logo { max-width: 300px; height: auto; display: block; margin-bottom: 10px; }
-        h1 { margin-top: 0; }
+        .logo-placeholder { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
     </style>
 </head>
 <body>
     <div class="header">
-        <img src="logos.png" alt="FinMango and ModernHusbands Logo" class="logo">
+        <div class="1.png">FinMango & ModernHusbands Logo</div>
         <h1>Dual Income Child Care Calculator</h1>
     </div>
 
@@ -41,7 +40,6 @@
 
     <div id="incomePage" class="page">
         <h2>Household Income Information</h2>
-        
         <div class="section">
             <h3>Current Financial Situation</h3>
             <div class="explanation">
@@ -56,11 +54,60 @@
                 <input type="number" id="salary2" value="65000" required>
             </div>
         </div>
-
         <button onclick="showPage('expensesPage')">Next: Expenses</button>
     </div>
 
-    <!-- The rest of the HTML remains the same as in the previous version -->
+    <div id="expensesPage" class="page">
+        <h2>Expenses</h2>
+        <div class="section">
+            <h3>Child Care Costs</h3>
+            <div class="form-group">
+                <label for="childCareCost">Annual Child Care Cost ($)</label>
+                <input type="number" id="childCareCost" value="20000" required>
+            </div>
+            <div class="form-group">
+                <label for="childCareYears">Number of Years Needing Child Care</label>
+                <input type="number" id="childCareYears" value="5" required>
+            </div>
+        </div>
+        <button onclick="showPage('incomePage')">Previous</button>
+        <button onclick="showPage('projectionsPage')">Next: Projections</button>
+    </div>
+
+    <div id="projectionsPage" class="page">
+        <h2>Projections</h2>
+        <div class="section">
+            <h3>Future Growth</h3>
+            <div class="form-group">
+                <label for="salaryGrowth">Estimated Annual Salary Growth (%)</label>
+                <input type="number" id="salaryGrowth" value="3" required>
+            </div>
+            <div class="form-group">
+                <label for="childCareGrowth">Estimated Annual Increase in Child Care Costs (%)</label>
+                <input type="number" id="childCareGrowth" value="2" required>
+            </div>
+        </div>
+        <button onclick="showPage('expensesPage')">Previous</button>
+        <button onclick="calculateResults()">Calculate Results</button>
+    </div>
+
+    <div id="resultsPage" class="page">
+        <h2>Your Projected Household Finances</h2>
+        <table id="resultsTable">
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Household Income</th>
+                    <th>Child Care Cost</th>
+                    <th>Net Income</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Results will be inserted here by JavaScript -->
+            </tbody>
+        </table>
+        <button onclick="showPage('incomePage')">Start Over</button>
+    </div>
 
     <script>
         function showPage(pageId) {
@@ -69,7 +116,31 @@
         }
 
         function calculateResults() {
-            // The calculation function remains the same as in the previous version
+            const salary1 = parseFloat(document.getElementById('salary1').value);
+            const salary2 = parseFloat(document.getElementById('salary2').value);
+            const childCareCost = parseFloat(document.getElementById('childCareCost').value);
+            const childCareYears = parseInt(document.getElementById('childCareYears').value);
+            const salaryGrowth = parseFloat(document.getElementById('salaryGrowth').value) / 100;
+            const childCareGrowth = parseFloat(document.getElementById('childCareGrowth').value) / 100;
+
+            let results = '';
+            for (let year = 1; year <= 15; year++) {
+                const projectedSalary1 = salary1 * Math.pow(1 + salaryGrowth, year - 1);
+                const projectedSalary2 = salary2 * Math.pow(1 + salaryGrowth, year - 1);
+                const totalIncome = projectedSalary1 + projectedSalary2;
+                const projectedChildCareCost = year <= childCareYears ? childCareCost * Math.pow(1 + childCareGrowth, year - 1) : 0;
+                const netIncome = totalIncome - projectedChildCareCost;
+
+                results += `<tr>
+                    <td>${year}</td>
+                    <td>$${Math.round(totalIncome).toLocaleString()}</td>
+                    <td>$${Math.round(projectedChildCareCost).toLocaleString()}</td>
+                    <td>$${Math.round(netIncome).toLocaleString()}</td>
+                </tr>`;
+            }
+
+            document.getElementById('resultsTable').getElementsByTagName('tbody')[0].innerHTML = results;
+            showPage('resultsPage');
         }
     </script>
 </body>
