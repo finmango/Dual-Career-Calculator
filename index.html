@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dual Income Child Care Calculator</title>
+    <title>Family Planning Calculator</title>
     <style>
         body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6; }
         h1, h2, h3 { color: #333; }
@@ -26,13 +26,13 @@
 <body>
     <div class="header">
         <img src="1.png" alt="FinMango and ModernHusbands Logo" class="logo">
-        <h1>Dual Income Child Care Calculator</h1>
+        <h1>Family Planning Calculator</h1>
     </div>
     
     <div id="introPage" class="page active">
         <h2>Welcome to Your Family Financial Planner</h2>
         <div class="explanation">
-            <p>This calculator, a collaboration between <a href="https://finmango.org" target="_blank">FinMango</a> and <a href="https://modernhusbands.com" target="_blank">Modern Husbands</a>, helps dual-income families evaluate their financial trajectory over the next 15 years, considering income, child care costs, healthcare expenses, taxes, and retirement savings.</p>
+            <p>This calculator, a collaboration between <a href="https://finmango.org" target="_blank">FinMango</a> and <a href="https://modernhusbands.com" target="_blank">Modern Husbands</a>, helps dual-income families evaluate their financial trajectory over the next 15 years. Factors include temporarily leaving the workforce, household income, childcare costs for one child, healthcare expenses, taxes, and retirement savings.</p>
             <p>We've pre-populated the fields with example numbers. Feel free to adjust these to match your specific situation.</p>
         </div>
         <button onclick="showPage('incomePage')">Let's Get Started</button>
@@ -42,9 +42,9 @@
         <h2>Household Income Information</h2>
         
         <div class="section">
-            <h3>Current Financial Situation</h3>
+            <h3>Household Income without Childcare or with Part-Time Childcare</h3>
             <div class="explanation">
-                <p>Enter the current or proposed salary for each spouse/parent. This gives us a baseline for projecting your future earnings.</p>
+                <p>Assume one spouse/parent will be the lead caregiver and that childcare is not needed or only needed on a part-time basis. Enter the current or proposed salary for each spouse/parent.</p>
             </div>
             <div class="form-group">
                 <label for="salary1">Spouse / Parent #1 Annual Salary ($)</label>
@@ -53,6 +53,9 @@
             <div class="form-group">
                 <label for="salary2">Spouse / Parent #2 Annual Salary ($)</label>
                 <input type="number" id="salary2" value="65000" required>
+            </div>
+              <div class="explanation">
+                <p>Note: Experts have found that for each year a college-educated woman leaves the workforce to be a full-time caregiver, she loses $250,000 in lifetime compensation.</p>
             </div>
         </div>
 
@@ -69,6 +72,7 @@
             </div>
             <div class="form-group">
                 <label for="childCareCost">Annual Child Care Cost ($)</label>
+                <label for="href="https://www.dol.gov/agencies/wb/topics/childcare/price-by-age-care-setting?_ga=2.212957522.717837184.1724436616-1072235102.1724436616" target="_blank">Click here</a> for Childcare Prices by Age of Children and Care Setting </label>
                 <input type="number" id="childCareCost" value="20000" required>
             </div>
             <div class="form-group">
@@ -105,10 +109,12 @@
             </div>
             <div class="form-group">
                 <label for="federalTaxRate">Estimated Federal Tax Rate (%)</label>
+                <label for="href="https://www.irs.gov/filing/federal-income-tax-rates-and-brackets" target="_blank">Click here</a> for Childcare Prices by Age of Children and Care Setting </label>
                 <input type="number" id="federalTaxRate" value="22" required>
             </div>
             <div class="form-group">
                 <label for="stateTaxRate">Estimated State Tax Rate (%)</label>
+                <label for="https://help.nfc.usda.gov/systems/TAXES/index.php" target="_blank">Click here</a> for Childcare Prices by Age of Children and Care Setting </label>
                 <input type="number" id="stateTaxRate" value="5" required>
             </div>
             <div class="form-group">
@@ -173,6 +179,7 @@
             </tbody>
         </table>
         <div class="explanation">
+            <p><a href="https://modernhusbands.com" target="_blank">Modern Husbands</a> helps couples manage their money and their home. <a href="https://finmango.org" target="_blank">FinMango</a> is a nonprofit advancing financial health worldwide.</p>
             <p><a href="https://modernhusbands.com" target="_blank">Modern Husbands</a> helps couples manage their money and their home. <a href="https://finmango.org" target="_blank">FinMango</a> is a nonprofit advancing financial health worldwide.</p>
         </div>
         <button onclick="showPage('incomePage')">Start Over</button>
