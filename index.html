@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dual Career Child Care Calculator</title>
+    <title>Streamlined Dual Career Child Care Calculator</title>
     <style>
         body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6; }
         h1, h2, h3 { color: #333; }
@@ -22,13 +22,13 @@
     </style>
 </head>
 <body>
-    <h1>Dual Career Child Care Calculator</h1>
+    <h1>Streamlined Dual Career Child Care Calculator</h1>
 
     <div id="introPage" class="page active">
         <h2>Welcome to Your Financial Future Planner</h2>
         <div class="explanation">
-            <p>This calculator helps couples evaluate their financial trajectory over the next 15 years, considering both careers and various benefits. It's designed to give you a clearer picture of your potential household income and help you make informed decisions about your careers and child care options.</p>
-            <p>You'll input information for each spouse/parent in several easy steps. Don't worry if you don't have exact figures - your best estimates will work!</p>
+            <p>This calculator helps couples evaluate their financial trajectory over the next 15 years, considering both careers and retirement savings. It's designed to give you a clearer picture of your potential household income with just a few key inputs.</p>
+            <p>We've pre-populated the fields with example numbers. Feel free to adjust these to match your specific situation.</p>
         </div>
         <button onclick="showPage('spouse1Page')">Let's Get Started</button>
     </div>
@@ -39,88 +39,11 @@
         <div class="section">
             <h3>Current Financial Situation</h3>
             <div class="explanation">
-                <p>Start with your current or proposed salary and bonus. This gives us a baseline for projecting your future earnings.</p>
+                <p>Start with your current or proposed salary. This gives us a baseline for projecting your future earnings.</p>
             </div>
             <div class="form-group">
-                <label for="spouse1Salary">Current / Proposed Annual Salary ($)</label>
-                <input type="number" id="spouse1Salary" name="spouse1Salary">
-            </div>
-            <div class="form-group">
-                <label for="spouse1Bonus">Current / Proposed Annual Bonus ($)</label>
-                <input type="number" id="spouse1Bonus" name="spouse1Bonus">
-            </div>
-        </div>
-
-        <div class="section">
-            <h3>Future Growth Projections</h3>
-            <div class="explanation">
-                <p>Estimate how you think your salary and bonus might grow over the next 15 years. This helps us calculate your potential future earnings.</p>
-            </div>
-            <div class="form-group">
-                <label for="spouse1SalaryGrowth1">Estimated Annual Salary Growth (years 1-5) (%)</label>
-                <input type="number" id="spouse1SalaryGrowth1" name="spouse1SalaryGrowth1">
-            </div>
-            <div class="form-group">
-                <label for="spouse1BonusGrowth1">Estimated Annual Bonus Growth (years 1-5) (%)</label>
-                <input type="number" id="spouse1BonusGrowth1" name="spouse1BonusGrowth1">
-            </div>
-            <div class="form-group">
-                <label for="spouse1SalaryGrowth2">Estimated Annual Salary Growth (years 6-10) (%)</label>
-                <input type="number" id="spouse1SalaryGrowth2" name="spouse1SalaryGrowth2">
-            </div>
-            <div class="form-group">
-                <label for="spouse1BonusGrowth2">Estimated Annual Bonus Growth (years 6-10) (%)</label>
-                <input type="number" id="spouse1BonusGrowth2" name="spouse1BonusGrowth2">
-            </div>
-            <div class="form-group">
-                <label for="spouse1SalaryGrowth3">Estimated Annual Salary Growth (years 11-15) (%)</label>
-                <input type="number" id="spouse1SalaryGrowth3" name="spouse1SalaryGrowth3">
-            </div>
-            <div class="form-group">
-                <label for="spouse1BonusGrowth3">Estimated Annual Bonus Growth (years 11-15) (%)</label>
-                <input type="number" id="spouse1BonusGrowth3" name="spouse1BonusGrowth3">
-            </div>
-        </div>
-
-        <div class="section">
-            <h3>Retirement and Benefits</h3>
-            <div class="explanation">
-                <p>Your retirement contributions and employer benefits play a significant role in your overall financial picture. Let's capture those details.</p>
-            </div>
-            <div class="form-group">
-                <label for="spouse1401kMatch">401k Employer Match (%)</label>
-                <input type="number" id="spouse1401kMatch" name="spouse1401kMatch">
-            </div>
-            <div class="form-group">
-                <label for="spouse1401kParticipation">Your 401k Contribution (%)</label>
-                <input type="number" id="spouse1401kParticipation" name="spouse1401kParticipation">
-            </div>
-            <div class="form-group">
-                <label for="spouse1HealthCarePremium">Annual Health Care Premium Cost ($)</label>
-                <input type="number" id="spouse1HealthCarePremium" name="spouse1HealthCarePremium">
-            </div>
-            <div class="form-group">
-                <label for="spouse1HSAContribution">Annual Health Savings Account Contribution ($)</label>
-                <input type="number" id="spouse1HSAContribution" name="spouse1HSAContribution">
-            </div>
-        </div>
-
-        <div class="section">
-            <h3>Leave and Additional Benefits</h3>
-            <div class="explanation">
-                <p>Paid leave and additional benefits can significantly impact your financial well-being. Let's account for these factors.</p>
-            </div>
-            <div class="form-group">
-                <label for="spouse1MedicalLeave">Paid Medical Leave (weeks per year)</label>
-                <input type="number" id="spouse1MedicalLeave" name="spouse1MedicalLeave">
-            </div>
-            <div class="form-group">
-                <label for="spouse1PaternityLeave">Paid Parental Leave (weeks)</label>
-                <input type="number" id="spouse1PaternityLeave" name="spouse1PaternityLeave">
-            </div>
-            <div class="form-group">
-                <label for="spouse1AdditionalBenefits">Estimated Value of Additional Benefits (e.g., stock options) ($)</label>
-                <input type="number" id="spouse1AdditionalBenefits" name="spouse1AdditionalBenefits">
+                <label for="salary1">Current / Proposed Annual Salary ($)</label>
+                <input type="number" id="salary1" value="75000" required>
             </div>
         </div>
 
@@ -129,24 +52,56 @@
 
     <div id="spouse2Page" class="page">
         <h2>Spouse / Parent #2 Information</h2>
-        <!-- Repeat the same structure as spouse1Page, but with spouse2 IDs -->
-        <!-- For brevity, I'm not repeating all the fields here, but they would be identical to spouse1Page -->
-        <button onclick="showPage('spouse1Page')">Back to Spouse / Parent #1</button>
+        
+        <div class="section">
+            <h3>Current Financial Situation</h3>
+            <div class="explanation">
+                <p>Now, let's input the information for the second spouse/parent.</p>
+            </div>
+            <div class="form-group">
+                <label for="salary2">Current / Proposed Annual Salary ($)</label>
+                <input type="number" id="salary2" value="65000" required>
+            </div>
+        </div>
+
+        <button onclick="showPage('projectionPage')">Next: Growth Projections</button>
+    </div>
+
+    <div id="projectionPage" class="page">
+        <h2>Growth Projections</h2>
+        
+        <div class="section">
+            <h3>Future Growth and Savings</h3>
+            <div class="explanation">
+                <p>Estimate how you think your salaries might grow over time and how much you plan to save for retirement. These factors significantly impact your long-term financial picture.</p>
+            </div>
+            <div class="form-group">
+                <label for="salaryGrowth">Estimated Annual Salary Growth for Both Careers (%)</label>
+                <input type="number" id="salaryGrowth" value="3" required>
+            </div>
+            <div class="form-group">
+                <label for="retirementContribution">Combined Annual Retirement Contribution (%)</label>
+                <input type="number" id="retirementContribution" value="10" required>
+            </div>
+        </div>
+
+        <button onclick="showPage('spouse2Page')">Previous</button>
         <button onclick="calculateResults()">Calculate Results</button>
     </div>
 
     <div id="resultsPage" class="page">
         <h2>Your Projected Household Income</h2>
         <div class="explanation">
-            <p>Below is a projection of your household income over the next 15 years. This includes salaries, bonuses, and retirement contributions for both spouses/parents.</p>
+            <p>Below is a projection of your household income over the next 15 years. This includes salaries and retirement contributions for both spouses/parents.</p>
             <p>Remember, this is an estimate based on the information you provided and doesn't account for factors like taxes, inflation, or unforeseen changes in employment or the economy.</p>
         </div>
         <table id="resultsTable">
             <thead>
                 <tr>
                     <th>Year</th>
-                    <th>Spouse/Parent 1 Total</th>
-                    <th>Spouse/Parent 2 Total</th>
+                    <th>Spouse/Parent 1</th>
+                    <th>Spouse/Parent 2</th>
+                    <th>Retirement Savings</th>
                     <th>Household Total</th>
                 </tr>
             </thead>
@@ -157,7 +112,7 @@
         <div class="explanation">
             <p>This projection can help you plan for the future, but remember it's just one tool in your financial planning toolkit. Consider discussing these results with a financial advisor for personalized advice.</p>
         </div>
-        <button onclick="showPage('spouse1Page')">Back to Input</button>
+        <button onclick="showPage('spouse1Page')">Start Over</button>
     </div>
 
     <script>
@@ -167,13 +122,30 @@
         }
 
         function calculateResults() {
-            // This function would contain the logic to calculate the results
-            // based on the input values and display them in the results table
-            // For brevity, the actual calculation logic is not included here
+            const salary1 = parseFloat(document.getElementById('salary1').value);
+            const salary2 = parseFloat(document.getElementById('salary2').value);
+            const salaryGrowth = parseFloat(document.getElementById('salaryGrowth').value) / 100;
+            const retirementContribution = parseFloat(document.getElementById('retirementContribution').value) / 100;
+
+            let results = '';
+            for (let year = 1; year <= 15; year++) {
+                const projectedSalary1 = salary1 * Math.pow(1 + salaryGrowth, year - 1);
+                const projectedSalary2 = salary2 * Math.pow(1 + salaryGrowth, year - 1);
+                const retirementSavings = (projectedSalary1 + projectedSalary2) * retirementContribution;
+                const total = projectedSalary1 + projectedSalary2 + retirementSavings;
+
+                results += `<tr>
+                    <td>${year}</td>
+                    <td>$${Math.round(projectedSalary1).toLocaleString()}</td>
+                    <td>$${Math.round(projectedSalary2).toLocaleString()}</td>
+                    <td>$${Math.round(retirementSavings).toLocaleString()}</td>
+                    <td>$${Math.round(total).toLocaleString()}</td>
+                </tr>`;
+            }
+
+            document.getElementById('resultsTable').getElementsByTagName('tbody')[0].innerHTML = results;
             showPage('resultsPage');
         }
-
-        // Additional JavaScript for calculations and interactivity would be needed here
     </script>
 </body>
 </html>
