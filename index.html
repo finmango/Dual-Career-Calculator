@@ -19,16 +19,16 @@
         th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
         th { background-color: #f2f2f2; }
         .section { margin-bottom: 30px; border: 1px solid #ddd; padding: 20px; border-radius: 4px; }
-        .header { margin-bottom: 20px; }
-        .logo-placeholder { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+        .header { text-align: left; margin-bottom: 20px; }
+        .logo { max-width: 200px; height: auto; margin-bottom: 10px; }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="1.png">FinMango & ModernHusbands Logo</div>
+        <img src="1.png" alt="FinMango and ModernHusbands Logo" class="logo">
         <h1>Dual Income Child Care Calculator</h1>
     </div>
-
+    
     <div id="introPage" class="page active">
         <h2>Welcome to Your Family Financial Planner</h2>
         <div class="explanation">
@@ -40,6 +40,7 @@
 
     <div id="incomePage" class="page">
         <h2>Household Income Information</h2>
+        
         <div class="section">
             <h3>Current Financial Situation</h3>
             <div class="explanation">
@@ -54,13 +55,18 @@
                 <input type="number" id="salary2" value="65000" required>
             </div>
         </div>
+
         <button onclick="showPage('expensesPage')">Next: Expenses</button>
     </div>
 
     <div id="expensesPage" class="page">
         <h2>Expenses</h2>
+        
         <div class="section">
             <h3>Child Care Costs</h3>
+            <div class="explanation">
+                <p>Enter your current or expected annual child care costs and for how long you expect to need these services.</p>
+            </div>
             <div class="form-group">
                 <label for="childCareCost">Annual Child Care Cost ($)</label>
                 <input type="number" id="childCareCost" value="20000" required>
@@ -70,14 +76,58 @@
                 <input type="number" id="childCareYears" value="5" required>
             </div>
         </div>
-        <button onclick="showPage('incomePage')">Previous</button>
-        <button onclick="showPage('projectionsPage')">Next: Projections</button>
+
+        <div class="section">
+            <h3>Healthcare Costs</h3>
+            <div class="explanation">
+                <p>Enter your annual healthcare premium costs and estimated out-of-pocket expenses.</p>
+            </div>
+            <div class="form-group">
+                <label for="healthcarePremium">Annual Healthcare Premium ($)</label>
+                <input type="number" id="healthcarePremium" value="5000" required>
+            </div>
+            <div class="form-group">
+                <label for="healthcareOutOfPocket">Estimated Annual Out-of-Pocket Healthcare Expenses ($)</label>
+                <input type="number" id="healthcareOutOfPocket" value="2000" required>
+            </div>
+        </div>
+
+        <button onclick="showPage('taxesPage')">Next: Taxes</button>
     </div>
 
-    <div id="projectionsPage" class="page">
-        <h2>Projections</h2>
+    <div id="taxesPage" class="page">
+        <h2>Taxes</h2>
+        
         <div class="section">
-            <h3>Future Growth</h3>
+            <h3>Tax Rates</h3>
+            <div class="explanation">
+                <p>Enter your estimated tax rates. These are rough estimates and may not reflect exact tax calculations.</p>
+            </div>
+            <div class="form-group">
+                <label for="federalTaxRate">Estimated Federal Tax Rate (%)</label>
+                <input type="number" id="federalTaxRate" value="22" required>
+            </div>
+            <div class="form-group">
+                <label for="stateTaxRate">Estimated State Tax Rate (%)</label>
+                <input type="number" id="stateTaxRate" value="5" required>
+            </div>
+            <div class="form-group">
+                <label for="localTaxRate">Estimated Local Tax Rate (%)</label>
+                <input type="number" id="localTaxRate" value="1" required>
+            </div>
+        </div>
+
+        <button onclick="showPage('projectionPage')">Next: Growth Projections</button>
+    </div>
+
+    <div id="projectionPage" class="page">
+        <h2>Growth Projections</h2>
+        
+        <div class="section">
+            <h3>Future Growth and Savings</h3>
+            <div class="explanation">
+                <p>Estimate how you think your salaries and expenses might change over time, and how much you plan to save for retirement.</p>
+            </div>
             <div class="form-group">
                 <label for="salaryGrowth">Estimated Annual Salary Growth (%)</label>
                 <input type="number" id="salaryGrowth" value="3" required>
@@ -86,19 +136,35 @@
                 <label for="childCareGrowth">Estimated Annual Increase in Child Care Costs (%)</label>
                 <input type="number" id="childCareGrowth" value="2" required>
             </div>
+            <div class="form-group">
+                <label for="healthcareGrowth">Estimated Annual Increase in Healthcare Costs (%)</label>
+                <input type="number" id="healthcareGrowth" value="5" required>
+            </div>
+            <div class="form-group">
+                <label for="retirementContribution">Combined Annual Retirement Contribution (%)</label>
+                <input type="number" id="retirementContribution" value="10" required>
+            </div>
         </div>
-        <button onclick="showPage('expensesPage')">Previous</button>
+
+        <button onclick="showPage('taxesPage')">Previous</button>
         <button onclick="calculateResults()">Calculate Results</button>
     </div>
 
     <div id="resultsPage" class="page">
         <h2>Your Projected Household Finances</h2>
+        <div class="explanation">
+            <p>Below is a projection of your household finances over the next 15 years, including income, expenses, taxes, and savings.</p>
+            <p>Remember, this is an estimate based on the information you provided and uses simplified tax calculations.</p>
+        </div>
         <table id="resultsTable">
             <thead>
                 <tr>
                     <th>Year</th>
-                    <th>Household Income</th>
-                    <th>Child Care Cost</th>
+                    <th>Gross Income</th>
+                    <th>Taxes</th>
+                    <th>Child Care</th>
+                    <th>Healthcare</th>
+                    <th>Retirement Savings</th>
                     <th>Net Income</th>
                 </tr>
             </thead>
@@ -106,6 +172,9 @@
                 <!-- Results will be inserted here by JavaScript -->
             </tbody>
         </table>
+        <div class="explanation">
+            <p>This projection can help you plan for your family's future, balancing income, expenses, taxes, and savings. Consider discussing these results with a financial advisor for personalized advice.</p>
+        </div>
         <button onclick="showPage('incomePage')">Start Over</button>
     </div>
 
@@ -120,21 +189,39 @@
             const salary2 = parseFloat(document.getElementById('salary2').value);
             const childCareCost = parseFloat(document.getElementById('childCareCost').value);
             const childCareYears = parseInt(document.getElementById('childCareYears').value);
+            const healthcarePremium = parseFloat(document.getElementById('healthcarePremium').value);
+            const healthcareOutOfPocket = parseFloat(document.getElementById('healthcareOutOfPocket').value);
+            const federalTaxRate = parseFloat(document.getElementById('federalTaxRate').value) / 100;
+            const stateTaxRate = parseFloat(document.getElementById('stateTaxRate').value) / 100;
+            const localTaxRate = parseFloat(document.getElementById('localTaxRate').value) / 100;
             const salaryGrowth = parseFloat(document.getElementById('salaryGrowth').value) / 100;
             const childCareGrowth = parseFloat(document.getElementById('childCareGrowth').value) / 100;
+            const healthcareGrowth = parseFloat(document.getElementById('healthcareGrowth').value) / 100;
+            const retirementContribution = parseFloat(document.getElementById('retirementContribution').value) / 100;
 
             let results = '';
             for (let year = 1; year <= 15; year++) {
                 const projectedSalary1 = salary1 * Math.pow(1 + salaryGrowth, year - 1);
                 const projectedSalary2 = salary2 * Math.pow(1 + salaryGrowth, year - 1);
-                const totalIncome = projectedSalary1 + projectedSalary2;
+                const grossIncome = projectedSalary1 + projectedSalary2;
+                
                 const projectedChildCareCost = year <= childCareYears ? childCareCost * Math.pow(1 + childCareGrowth, year - 1) : 0;
-                const netIncome = totalIncome - projectedChildCareCost;
+                const projectedHealthcareCost = (healthcarePremium + healthcareOutOfPocket) * Math.pow(1 + healthcareGrowth, year - 1);
+                
+                const retirementSavings = grossIncome * retirementContribution;
+                
+                const taxableIncome = grossIncome - retirementSavings;
+                const taxes = taxableIncome * (federalTaxRate + stateTaxRate + localTaxRate);
+                
+                const netIncome = grossIncome - taxes - projectedChildCareCost - projectedHealthcareCost - retirementSavings;
 
                 results += `<tr>
                     <td>${year}</td>
-                    <td>$${Math.round(totalIncome).toLocaleString()}</td>
+                    <td>$${Math.round(grossIncome).toLocaleString()}</td>
+                    <td>$${Math.round(taxes).toLocaleString()}</td>
                     <td>$${Math.round(projectedChildCareCost).toLocaleString()}</td>
+                    <td>$${Math.round(projectedHealthcareCost).toLocaleString()}</td>
+                    <td>$${Math.round(retirementSavings).toLocaleString()}</td>
                     <td>$${Math.round(netIncome).toLocaleString()}</td>
                 </tr>`;
             }
