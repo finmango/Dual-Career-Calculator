@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dual Career Calculator</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6; }
         h1, h2, h3 { color: #333; }
@@ -23,6 +24,7 @@
         .header { text-align: left; margin-bottom: 20px; }
         .logo { max-width: 200px; height: auto; margin-bottom: 10px; }
         .info-link { font-size: 0.8em; margin-bottom: 5px; }
+        #comparisonChart { max-width: 800px; margin: 20px auto; }
     </style>
 </head>
 <body>
@@ -230,6 +232,13 @@
                 <!-- Results will be inserted here by JavaScript -->
             </tbody>
         </table>
+        
+        <h3>DINK vs. Having Kids Comparison</h3>
+        <div class="explanation">
+            <p>This chart compares the projected net income over 15 years for your current scenario versus a DINK (Dual Income No Kids) scenario.</p>
+        </div>
+        <canvas id="comparisonChart"></canvas>
+        
         <div class="explanation">
             <p><a href="https://finmango.org" target="_blank">FinMango</a> is a nonprofit advancing financial health worldwide and <a href="https://modernhusbands.com" target="_blank">Modern Husbands</a> helps couples manage their money and their home.</p>
             <p><a href="https://modernhusbands.com" target="_blank">Click here</a> to subscribe and download The Ultimate Guide to Family Planning for free. By subscribing to our free newsletter, you will receive ideas every couple of weeks on managing money and the home as a team.</p>
@@ -275,6 +284,9 @@
             const totalBasicLivingExpenses = housingCost + transportationCost + foodUtilitiesCost;
 
             let results = '';
+            let currentScenarioData = [];
+            let dinkScenarioData = [];
+
             for (let year = 1; year <= 15; year++) {
                 const projectedSalary1 = salary1 * Math.pow(1 + salaryGrowth, year - 1);
                 const projectedSalary2 = salary2 * Math.pow(1 + salaryGrowth, year - 1);
@@ -300,6 +312,12 @@
                 
                 const netIncome = grossIncome - taxes - projectedChildCareCost - projectedHealthcareCost - projectedBasicLivingExpenses - totalRetirementSavings;
 
+                currentScenarioData.push(netIncome);
+
+                // Calculate DINK scenario (no childcare costs)
+                const dinkNetIncome = grossIncome - taxes - projectedHealthcareCost - projectedBasicLivingExpenses - totalRetirementSavings;
+                dinkScenarioData.push(dinkNetIncome);
+
                 results += `<tr>
                     <td>${year}</td>
                     <td>$${Math.round(grossIncome).toLocaleString()}</td>
@@ -314,6 +332,52 @@
 
             document.getElementById('resultsTable').getElementsByTagName('tbody')[0].innerHTML = results;
             showPage('resultsPage');
+            renderComparisonChart(currentScenarioData, dinkScenarioData);
+        }
+
+        function renderComparisonChart(currentScenarioData, dinkScenarioData) {
+            const ctx = document.getElementById('comparisonChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({length: 15}, (_, i) => i + 1),
+                    datasets: [{
+                        label: 'Current Scenario',
+                        data: currentScenarioData,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    }, {
+                        label: 'DINK Scenario',
+                        data: dinkScenarioData,
+                        borderColor: 'rgb(255, 99, 132)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Net Income Comparison: Current Scenario vs DINK'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Net Income ($)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Year'
+                            }
+                        }
+                    }
+                }
+            });
         }
     </script>
 </body>
