@@ -34,7 +34,7 @@
     <div id="introPage" class="page active">
         <h2>Welcome to Your Family Financial Planner</h2>
         <div class="explanation">
-            <p>This calculator, a collaboration between <a href="https://finmango.org" target="_blank">FinMango</a> and <a href="https://modernhusbands.com" target="_blank">Modern Husbands</a>, helps dual-income families and couples evaluate their financial trajectory over the next 15 years. Factors include household income, potential childcare costs, healthcare expenses, taxes, and retirement savings.</p>
+            <p>This calculator, a collaboration between <a href="https://finmango.org" target="_blank">FinMango</a> and <a href="https://modernhusbands.com" target="_blank">Modern Husbands</a>, helps dual-income families and couples evaluate their financial trajectory over the next 15 years. Factors include household income, potential childcare costs, healthcare expenses, basic living expenses, taxes, and retirement savings.</p>
             <p>We've pre-populated the fields with example numbers. Feel free to adjust these to match your specific situation.</p>
         </div>
         <button onclick="showPage('incomePage')">Let's Get Started</button>
@@ -108,6 +108,31 @@
             </div>
         </div>
 
+        <button onclick="showPage('livingExpensesPage')">Next: Living Expenses</button>
+    </div>
+
+    <div id="livingExpensesPage" class="page">
+        <h2>Basic Living Expenses</h2>
+        
+        <div class="section">
+            <h3>Monthly Living Costs</h3>
+            <div class="explanation">
+                <p>Enter your estimated monthly expenses for essential living costs. These will be factored into your net income calculations.</p>
+            </div>
+            <div class="form-group">
+                <label for="housingCost">Monthly Housing Costs (Rent/Mortgage) ($)</label>
+                <input type="number" id="housingCost" value="1500" required>
+            </div>
+            <div class="form-group">
+                <label for="transportationCost">Monthly Transportation Costs (Car payments, insurance, public transit) ($)</label>
+                <input type="number" id="transportationCost" value="500" required>
+            </div>
+            <div class="form-group">
+                <label for="foodUtilitiesCost">Monthly Food and Utilities Costs ($)</label>
+                <input type="number" id="foodUtilitiesCost" value="800" required>
+            </div>
+        </div>
+
         <button onclick="showPage('taxesPage')">Next: Taxes</button>
     </div>
 <div id="taxesPage" class="page">
@@ -158,6 +183,10 @@
                 <input type="number" id="healthcareGrowth" value="5" required>
             </div>
             <div class="form-group">
+                <label for="livingExpensesGrowth">Estimated Annual Increase in Living Expenses (%)</label>
+                <input type="number" id="livingExpensesGrowth" value="2" required>
+            </div>
+            <div class="form-group">
                 <label for="retirementContribution1">Spouse / Partner #1 Annual Retirement Contribution (%)</label>
                 <input type="number" id="retirementContribution1" value="6" required>
             </div>
@@ -182,11 +211,7 @@
     <div id="resultsPage" class="page">
         <h2>Your Projected Household Finances</h2>
         <div class="explanation">
-            <p>Below is a projection of your household finances over the next 15 years, including income, expenses, taxes, savings, and adjusting for inflation.
-
-The Annual Cost Per Child combines your entered childcare costs and the annual cost of one child. According to the USDA, the estimated annual cost per child is $18,000 in 2024. 
-
-Remember, this estimate is based on the information you provided and uses simplified tax calculations. </p>
+            <p>Below is a projection of your household finances over the next 15 years, including income, expenses, taxes, savings, and adjusting for inflation. The Annual Cost Per Child combines your entered childcare costs and the annual cost of one child. According to the USDA, the estimated annual cost per child is $18,000 in 2024. Remember, this estimate is based on the information you provided and uses simplified tax calculations.</p>
         </div>
         <table id="resultsTable">
             <thead>
@@ -196,6 +221,7 @@ Remember, this estimate is based on the information you provided and uses simpli
                     <th>Taxes</th>
                     <th>Annual Cost Per Child</th>
                     <th>Healthcare</th>
+                    <th>Basic Living Expenses</th>
                     <th>Retirement Savings</th>
                     <th>Net Income</th>
                 </tr>
@@ -230,18 +256,23 @@ Remember, this estimate is based on the information you provided and uses simpli
             const childCareYears = isDINK ? 0 : Math.min(parseInt(document.getElementById('childCareYears').value), 5);
             const healthcarePremium = parseFloat(document.getElementById('healthcarePremium').value);
             const healthcareOutOfPocket = parseFloat(document.getElementById('healthcareOutOfPocket').value);
+            const housingCost = parseFloat(document.getElementById('housingCost').value) * 12;
+            const transportationCost = parseFloat(document.getElementById('transportationCost').value) * 12;
+            const foodUtilitiesCost = parseFloat(document.getElementById('foodUtilitiesCost').value) * 12;
             const federalTaxRate = parseFloat(document.getElementById('federalTaxRate').value) / 100;
             const stateTaxRate = parseFloat(document.getElementById('stateTaxRate').value) / 100;
             const localTaxRate = parseFloat(document.getElementById('localTaxRate').value) / 100;
             const salaryGrowth = parseFloat(document.getElementById('salaryGrowth').value) / 100;
             const childCareGrowth = parseFloat(document.getElementById('childCareGrowth').value) / 100;
             const healthcareGrowth = parseFloat(document.getElementById('healthcareGrowth').value) / 100;
+            const livingExpensesGrowth = parseFloat(document.getElementById('livingExpensesGrowth').value) / 100;
             const retirementContribution1 = parseFloat(document.getElementById('retirementContribution1').value) / 100;
             const employerMatch1 = parseFloat(document.getElementById('employerMatch1').value) / 100;
             const retirementContribution2 = parseFloat(document.getElementById('retirementContribution2').value) / 100;
             const employerMatch2 = parseFloat(document.getElementById('employerMatch2').value) / 100;
 
             const baselineChildCareCosts = [14440, 14832, 15277, 15735, 16207, 20866, 21493, 22138, 22802, 23486, 24190, 24916, 25664, 26434, 27227];
+            const totalBasicLivingExpenses = housingCost + transportationCost + foodUtilitiesCost;
 
             let results = '';
             for (let year = 1; year <= 15; year++) {
@@ -258,6 +289,7 @@ Remember, this estimate is based on the information you provided and uses simpli
                 }
 
                 const projectedHealthcareCost = (healthcarePremium + healthcareOutOfPocket) * Math.pow(1 + healthcareGrowth, year - 1);
+                const projectedBasicLivingExpenses = totalBasicLivingExpenses * Math.pow(1 + livingExpensesGrowth, year - 1);
                 
                 const retirementSavings1 = projectedSalary1 * (retirementContribution1 + Math.min(retirementContribution1, employerMatch1));
                 const retirementSavings2 = projectedSalary2 * (retirementContribution2 + Math.min(retirementContribution2, employerMatch2));
@@ -266,7 +298,7 @@ Remember, this estimate is based on the information you provided and uses simpli
                 const taxableIncome = grossIncome - totalRetirementSavings;
                 const taxes = taxableIncome * (federalTaxRate + stateTaxRate + localTaxRate);
                 
-                const netIncome = grossIncome - taxes - projectedChildCareCost - projectedHealthcareCost - totalRetirementSavings;
+                const netIncome = grossIncome - taxes - projectedChildCareCost - projectedHealthcareCost - projectedBasicLivingExpenses - totalRetirementSavings;
 
                 results += `<tr>
                     <td>${year}</td>
@@ -274,6 +306,7 @@ Remember, this estimate is based on the information you provided and uses simpli
                     <td>$${Math.round(taxes).toLocaleString()}</td>
                     <td>$${Math.round(projectedChildCareCost).toLocaleString()}</td>
                     <td>$${Math.round(projectedHealthcareCost).toLocaleString()}</td>
+                    <td>$${Math.round(projectedBasicLivingExpenses).toLocaleString()}</td>
                     <td>$${Math.round(totalRetirementSavings).toLocaleString()}</td>
                     <td>$${Math.round(netIncome).toLocaleString()}</td>
                 </tr>`;
