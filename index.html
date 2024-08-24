@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dual Career Calculator</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6; }
         h1, h2, h3 { color: #333; }
@@ -24,7 +23,6 @@
         .header { text-align: left; margin-bottom: 20px; }
         .logo { max-width: 200px; height: auto; margin-bottom: 10px; }
         .info-link { font-size: 0.8em; margin-bottom: 5px; }
-        #comparisonChart { max-width: 800px; margin: 20px auto; }
     </style>
 </head>
 <body>
@@ -233,11 +231,28 @@
             </tbody>
         </table>
         
-        <h3>DINK vs. Having Kids Comparison</h3>
+        <h3>DINK vs. Current Scenario Comparison</h3>
         <div class="explanation">
-            <p>This chart compares the projected net income over 15 years for your current scenario versus a DINK (Dual Income No Kids) scenario.</p>
+            <p>This comparison shows the financial difference between your current scenario and a DINK (Dual Income No Kids) scenario over 15 years.</p>
         </div>
-        <canvas id="comparisonChart"></canvas>
+        <div id="comparisonSummary" class="section">
+            <h4>Total Difference Over 15 Years</h4>
+            <p id="totalDifference"></p>
+            <h4>Key Milestones</h4>
+            <table id="milestonesTable">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Current Scenario</th>
+                        <th>DINK Scenario</th>
+                        <th>Difference</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rows will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
         
         <div class="explanation">
             <p><a href="https://finmango.org" target="_blank">FinMango</a> is a nonprofit advancing financial health worldwide and <a href="https://modernhusbands.com" target="_blank">Modern Husbands</a> helps couples manage their money and their home.</p>
@@ -332,52 +347,31 @@
 
             document.getElementById('resultsTable').getElementsByTagName('tbody')[0].innerHTML = results;
             showPage('resultsPage');
-            renderComparisonChart(currentScenarioData, dinkScenarioData);
+            renderComparisonSummary(currentScenarioData, dinkScenarioData);
         }
 
-        function renderComparisonChart(currentScenarioData, dinkScenarioData) {
-            const ctx = document.getElementById('comparisonChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: Array.from({length: 15}, (_, i) => i + 1),
-                    datasets: [{
-                        label: 'Current Scenario',
-                        data: currentScenarioData,
-                        borderColor: 'rgb(75, 192, 192)',
-                        tension: 0.1
-                    }, {
-                        label: 'DINK Scenario',
-                        data: dinkScenarioData,
-                        borderColor: 'rgb(255, 99, 132)',
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Net Income Comparison: Current Scenario vs DINK'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Net Income ($)'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Year'
-                            }
-                        }
-                    }
-                }
+        function renderComparisonSummary(currentScenarioData, dinkScenarioData) {
+            const totalDifference = dinkScenarioData.reduce((sum, value, index) => sum + value - currentScenarioData[index], 0);
+            document.getElementById('totalDifference').textContent = `$${Math.round(totalDifference).toLocaleString()}`;
+
+            const milestones = [5, 10, 15];
+            let milestonesHtml = '';
+
+            milestones.forEach(year => {
+                const index = year - 1;
+                const currentValue = currentScenarioData[index];
+                const dinkValue = dinkScenarioData[index];
+                const difference = dinkValue - currentValue;
+
+                milestonesHtml += `<tr>
+                    <td>${year}</td>
+                    <td>$${Math.round(currentValue).toLocaleString()}</td>
+                    <td>$${Math.round(dinkValue).toLocaleString()}</td>
+                    <td>$${Math.round(difference).toLocaleString()}</td>
+                </tr>`;
             });
+
+            document.getElementById('milestonesTable').getElementsByTagName('tbody')[0].innerHTML = milestonesHtml;
         }
     </script>
 </body>
