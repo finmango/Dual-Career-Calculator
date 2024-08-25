@@ -259,14 +259,36 @@
             </tbody>
         </table>
         
-        <h3>Scenario Comparisons</h3>
+        <h3>Workforce Leave vs. Daycare Comparison</h3>
         <div class="explanation">
-            <p>This comparison shows the financial differences between your current scenario, a DINK (Dual Income No Kids) scenario, and a scenario using daycare/childcare over 15 years.</p>
+            <p>This comparison shows the financial difference between your current scenario (with potential workforce leave) and a scenario where both partners work full-time and use daycare/childcare.</p>
+        </div>
+        <div id="workforceVsDaycareComparison" class="section">
+            <h4>Total Difference Over 15 Years</h4>
+            <p id="totalDifferenceDaycare"></p>
+            <h4>Key Milestones</h4>
+            <table id="workforceVsDaycareTable">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Current Scenario</th>
+                        <th>Daycare Scenario</th>
+                        <th>Difference</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rows will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <h3>DINK vs. Current Scenario Comparison</h3>
+        <div class="explanation">
+            <p>This comparison shows the financial difference between your current scenario and a DINK (Dual Income No Kids) scenario over 15 years.</p>
         </div>
         <div id="comparisonSummary" class="section">
-            <h4>Total Differences Over 15 Years</h4>
-            <p id="totalDifferenceDINK"></p>
-            <p id="totalDifferenceDaycare"></p>
+            <h4>Total Difference Over 15 Years</h4>
+            <p id="totalDifference"></p>
             <h4>Key Milestones</h4>
             <table id="milestonesTable">
                 <thead>
@@ -274,7 +296,7 @@
                         <th>Year</th>
                         <th>Current Scenario</th>
                         <th>DINK Scenario</th>
-                        <th>Daycare Scenario</th>
+                        <th>Difference</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -395,15 +417,35 @@
 
         document.getElementById('resultsTable').getElementsByTagName('tbody')[0].innerHTML = results;
         showPage('resultsPage');
-        renderComparisonSummary(currentScenarioData, dinkScenarioData, daycareScenarioData);
+        renderWorkforceVsDaycareComparison(currentScenarioData, daycareScenarioData);
+        renderDINKComparison(currentScenarioData, dinkScenarioData);
     }
 
-    function renderComparisonSummary(currentScenarioData, dinkScenarioData, daycareScenarioData) {
-        const totalDifferenceDINK = dinkScenarioData.reduce((sum, value, index) => sum + value - currentScenarioData[index], 0);
-        const totalDifferenceDaycare = daycareScenarioData.reduce((sum, value, index) => sum + value - currentScenarioData[index], 0);
-        
-        document.getElementById('totalDifferenceDINK').textContent = `Difference from DINK scenario: $${Math.round(totalDifferenceDINK).toLocaleString()}`;
-        document.getElementById('totalDifferenceDaycare').textContent = `Difference from daycare scenario: $${Math.round(totalDifferenceDaycare).toLocaleString()}`;
+    function renderWorkforceVsDaycareComparison(currentScenarioData, daycareScenarioData) {
+        const totalDifference = daycareScenarioData.reduce((sum, value, index) => sum + value - currentScenarioData[index], 0);
+        document.getElementById('totalDifferenceDaycare').textContent = `Difference from daycare scenario: $${Math.round(totalDifference).toLocaleString()}`;
+
+        const milestones = [5, 10, 15];
+        let milestonesHtml = '';
+        milestones.forEach(year => {
+            const index = year - 1;
+            const currentValue = currentScenarioData[index];
+            const daycareValue = daycareScenarioData[index];
+            const difference = daycareValue - currentValue;
+
+            milestonesHtml += `<tr>
+                <td>${year}</td>
+                <td>$${Math.round(currentValue).toLocaleString()}</td>
+                <td>$${Math.round(daycareValue).toLocaleString()}</td>
+                <td>$${Math.round(difference).toLocaleString()}</td>
+            </tr>`;
+        });
+        document.getElementById('workforceVsDaycareTable').getElementsByTagName('tbody')[0].innerHTML = milestonesHtml;
+    }
+
+    function renderDINKComparison(currentScenarioData, dinkScenarioData) {
+        const totalDifference = dinkScenarioData.reduce((sum, value, index) => sum + value - currentScenarioData[index], 0);
+        document.getElementById('totalDifference').textContent = `Difference from DINK scenario: $${Math.round(totalDifference).toLocaleString()}`;
 
         const milestones = [5, 10, 15];
         let milestonesHtml = '';
@@ -411,13 +453,13 @@
             const index = year - 1;
             const currentValue = currentScenarioData[index];
             const dinkValue = dinkScenarioData[index];
-            const daycareValue = daycareScenarioData[index];
+            const difference = dinkValue - currentValue;
 
             milestonesHtml += `<tr>
                 <td>${year}</td>
                 <td>$${Math.round(currentValue).toLocaleString()}</td>
                 <td>$${Math.round(dinkValue).toLocaleString()}</td>
-                <td>$${Math.round(daycareValue).toLocaleString()}</td>
+                <td>$${Math.round(difference).toLocaleString()}</td>
             </tr>`;
         });
         document.getElementById('milestonesTable').getElementsByTagName('tbody')[0].innerHTML = milestonesHtml;
