@@ -23,7 +23,9 @@
         .header { text-align: left; margin-bottom: 20px; }
         .logo { max-width: 200px; height: auto; margin-bottom: 10px; cursor: pointer; }
         .info-link { font-size: 0.8em; margin-bottom: 5px; }
+        .chart-container { height: 300px; margin-bottom: 20px; }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="header">
@@ -102,8 +104,7 @@
         <button onclick="showPage('introPage')">Previous</button>
         <button onclick="showPage('expensesPage')">Next: Expenses</button>
     </div>
-
-    <div id="expensesPage" class="page">
+<div id="expensesPage" class="page">
         <h2>Expenses</h2>
         <div id="childcareSection" class="section">
             <h3>Additional Childcare Costs</h3>
@@ -139,7 +140,8 @@
         <button onclick="showPage('incomePage')">Previous</button>
         <button onclick="showPage('livingExpensesPage')">Next: Living Expenses</button>
     </div>
-<div id="livingExpensesPage" class="page">
+
+    <div id="livingExpensesPage" class="page">
         <h2>Basic Living Expenses</h2>
         <div class="section">
             <h3>Monthly Living Costs</h3>
@@ -216,7 +218,7 @@
                 <label for="livingExpensesGrowth">Estimated Annual Increase in Living Expenses (%)</label>
                 <input type="number" id="livingExpensesGrowth" value="2" required>
             </div>
-            <div class="form-group">
+<div class="form-group">
                 <label for="retirementContribution1">Spouse / Partner #1 Annual Retirement Contribution (%)</label>
                 <input type="number" id="retirementContribution1" value="6" required>
             </div>
@@ -236,7 +238,8 @@
         <button onclick="showPage('taxesPage')">Previous</button>
         <button onclick="calculateResults()">Calculate Results</button>
     </div>
-<div id="resultsPage" class="page">
+
+    <div id="resultsPage" class="page">
         <h2>Your Projected Household Finances</h2>
         <div class="explanation">
             <p>Below is a projection of your household finances over the next 15 years, including income, expenses, taxes, savings, and adjusting for inflation. The Annual Cost Per Child combines your entered childcare costs and the annual cost of one child. According to the USDA, the estimated annual cost per child is $18,000 in 2024. Remember, this estimate is based on the information you provided and uses simplified tax calculations.</p>
@@ -259,50 +262,27 @@
             </tbody>
         </table>
         
-        <h3>Workforce Leave vs. Daycare Comparison</h3>
+        <h3>Financial Impact of Career Decisions</h3>
         <div class="explanation">
-            <p>This comparison shows the financial difference between your current scenario (with potential workforce leave) and a scenario where both partners work full-time and use daycare/childcare.</p>
+            <p>This section compares your current scenario with alternatives to help you understand the long-term financial implications of your career decisions.</p>
         </div>
-        <div id="workforceVsDaycareComparison" class="section">
-            <h4>Total Difference Over 15 Years</h4>
-            <p id="totalDifferenceDaycare"></p>
-            <h4>Key Milestones</h4>
-            <table id="workforceVsDaycareTable">
-                <thead>
-                    <tr>
-                        <th>Year</th>
-                        <th>Current Scenario</th>
-                        <th>Daycare Scenario</th>
-                        <th>Difference</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Rows will be inserted here by JavaScript -->
-                </tbody>
-            </table>
+        
+        <div id="careerComparison" class="section">
+            <h4>Workforce Leave vs. Continuous Employment with Childcare</h4>
+            <p>This comparison shows the financial difference between your current scenario (with potential workforce leave) and a scenario where both partners work continuously and use childcare services.</p>
+            <div class="chart-container">
+                <canvas id="workforceVsChildcareChart"></canvas>
+            </div>
+            <p id="workforceVsChildcareSummary"></p>
         </div>
 
-        <h3>DINK vs. Current Scenario Comparison</h3>
-        <div class="explanation">
-            <p>This comparison shows the financial difference between your current scenario and a DINK (Dual Income No Kids) scenario over 15 years.</p>
-        </div>
-        <div id="comparisonSummary" class="section">
-            <h4>Total Difference Over 15 Years</h4>
-            <p id="totalDifference"></p>
-            <h4>Key Milestones</h4>
-            <table id="milestonesTable">
-                <thead>
-                    <tr>
-                        <th>Year</th>
-                        <th>Current Scenario</th>
-                        <th>DINK Scenario</th>
-                        <th>Difference</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Rows will be inserted here by JavaScript -->
-                </tbody>
-            </table>
+        <div id="dinkComparison" class="section">
+            <h4>Current Plan vs. DINK (Dual Income No Kids) Scenario</h4>
+            <p>This comparison illustrates the financial difference between your current family plan and a scenario without children (DINK) over 15 years.</p>
+            <div class="chart-container">
+                <canvas id="currentVsDinkChart"></canvas>
+            </div>
+            <p id="currentVsDinkSummary"></p>
         </div>
         
         <div class="explanation">
@@ -354,7 +334,7 @@
         let results = '';
         let currentScenarioData = [];
         let dinkScenarioData = [];
-        let daycareScenarioData = [];
+        let continuousEmploymentData = [];
 
         for (let year = 1; year <= 15; year++) {
             let projectedSalary1 = salary1 * Math.pow(1 + salaryGrowth, year - 1);
@@ -394,14 +374,14 @@
             const dinkNetIncome = grossIncome - taxes - projectedHealthcareCost - projectedBasicLivingExpenses - totalRetirementSavings;
             dinkScenarioData.push(dinkNetIncome);
 
-            // Calculate daycare scenario (both partners working, using childcare)
-            const daycareSalary1 = salary1 * Math.pow(1 + salaryGrowth, year - 1);
-            const daycareSalary2 = salary2 * Math.pow(1 + salaryGrowth, year - 1);
-            const daycareGrossIncome = daycareSalary1 + daycareSalary2;
-            const daycareTaxableIncome = daycareGrossIncome - totalRetirementSavings;
-            const daycareTaxes = daycareTaxableIncome * (federalTaxRate + stateTaxRate + localTaxRate);
-            const daycareNetIncome = daycareGrossIncome - daycareTaxes - projectedChildCareCost - projectedHealthcareCost - projectedBasicLivingExpenses - totalRetirementSavings;
-            daycareScenarioData.push(daycareNetIncome);
+            // Calculate continuous employment scenario (both partners working, using childcare)
+            const continuousEmploymentSalary1 = salary1 * Math.pow(1 + salaryGrowth, year - 1);
+            const continuousEmploymentSalary2 = salary2 * Math.pow(1 + salaryGrowth, year - 1);
+            const continuousEmploymentGrossIncome = continuousEmploymentSalary1 + continuousEmploymentSalary2;
+            const continuousEmploymentTaxableIncome = continuousEmploymentGrossIncome - totalRetirementSavings;
+            const continuousEmploymentTaxes = continuousEmploymentTaxableIncome * (federalTaxRate + stateTaxRate + localTaxRate);
+            const continuousEmploymentNetIncome = continuousEmploymentGrossIncome - continuousEmploymentTaxes - projectedChildCareCost - projectedHealthcareCost - projectedBasicLivingExpenses - totalRetirementSavings;
+            continuousEmploymentData.push(continuousEmploymentNetIncome);
 
             results += `<tr>
                 <td>${year}</td>
@@ -417,52 +397,91 @@
 
         document.getElementById('resultsTable').getElementsByTagName('tbody')[0].innerHTML = results;
         showPage('resultsPage');
-        renderWorkforceVsDaycareComparison(currentScenarioData, daycareScenarioData);
+        renderWorkforceVsChildcareComparison(currentScenarioData, continuousEmploymentData);
         renderDINKComparison(currentScenarioData, dinkScenarioData);
     }
-
-    function renderWorkforceVsDaycareComparison(currentScenarioData, daycareScenarioData) {
-        const totalDifference = daycareScenarioData.reduce((sum, value, index) => sum + value - currentScenarioData[index], 0);
-        document.getElementById('totalDifferenceDaycare').textContent = `Difference from daycare scenario: $${Math.round(totalDifference).toLocaleString()}`;
-
-        const milestones = [5, 10, 15];
-        let milestonesHtml = '';
-        milestones.forEach(year => {
-            const index = year - 1;
-            const currentValue = currentScenarioData[index];
-            const daycareValue = daycareScenarioData[index];
-            const difference = daycareValue - currentValue;
-
-            milestonesHtml += `<tr>
-                <td>${year}</td>
-                <td>$${Math.round(currentValue).toLocaleString()}</td>
-                <td>$${Math.round(daycareValue).toLocaleString()}</td>
-                <td>$${Math.round(difference).toLocaleString()}</td>
-            </tr>`;
+function renderWorkforceVsChildcareComparison(currentScenarioData, continuousEmploymentData) {
+        const ctx = document.getElementById('workforceVsChildcareChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: 15}, (_, i) => i + 1),
+                datasets: [{
+                    label: 'Current Scenario',
+                    data: currentScenarioData,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }, {
+                    label: 'Continuous Employment',
+                    data: continuousEmploymentData,
+                    borderColor: 'rgb(255, 99, 132)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Net Income ($)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Year'
+                        }
+                    }
+                }
+            }
         });
-        document.getElementById('workforceVsDaycareTable').getElementsByTagName('tbody')[0].innerHTML = milestonesHtml;
+
+        const totalDifference = continuousEmploymentData.reduce((sum, value, index) => sum + value - currentScenarioData[index], 0);
+        document.getElementById('workforceVsChildcareSummary').textContent = `Over 15 years, the difference between your current plan and continuous employment is $${Math.round(totalDifference).toLocaleString()}. ${totalDifference > 0 ? 'Continuous employment results in higher net income.' : 'Your current plan results in higher net income.'}`;
     }
 
     function renderDINKComparison(currentScenarioData, dinkScenarioData) {
-        const totalDifference = dinkScenarioData.reduce((sum, value, index) => sum + value - currentScenarioData[index], 0);
-        document.getElementById('totalDifference').textContent = `Difference from DINK scenario: $${Math.round(totalDifference).toLocaleString()}`;
-
-        const milestones = [5, 10, 15];
-        let milestonesHtml = '';
-        milestones.forEach(year => {
-            const index = year - 1;
-            const currentValue = currentScenarioData[index];
-            const dinkValue = dinkScenarioData[index];
-            const difference = dinkValue - currentValue;
-
-            milestonesHtml += `<tr>
-                <td>${year}</td>
-                <td>$${Math.round(currentValue).toLocaleString()}</td>
-                <td>$${Math.round(dinkValue).toLocaleString()}</td>
-                <td>$${Math.round(difference).toLocaleString()}</td>
-            </tr>`;
+        const ctx = document.getElementById('currentVsDinkChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: 15}, (_, i) => i + 1),
+                datasets: [{
+                    label: 'Current Scenario',
+                    data: currentScenarioData,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }, {
+                    label: 'DINK Scenario',
+                    data: dinkScenarioData,
+                    borderColor: 'rgb(255, 99, 132)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Net Income ($)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Year'
+                        }
+                    }
+                }
+            }
         });
-        document.getElementById('milestonesTable').getElementsByTagName('tbody')[0].innerHTML = milestonesHtml;
+
+        const totalDifference = dinkScenarioData.reduce((sum, value, index) => sum + value - currentScenarioData[index], 0);
+        document.getElementById('currentVsDinkSummary').textContent = `Over 15 years, the difference between your current plan and a DINK scenario is $${Math.round(totalDifference).toLocaleString()}. This represents the financial impact of having children based on your inputs.`;
     }
     </script>
 </body>
