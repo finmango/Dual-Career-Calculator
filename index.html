@@ -105,7 +105,8 @@
         <button onclick="showPage('introPage')">Previous</button>
         <button onclick="showPage('expensesPage')">Next: Expenses</button>
     </div>
-<div id="expensesPage" class="page">
+
+    <div id="expensesPage" class="page">
         <h2>Expenses</h2>
         <div id="childcareSection" class="section">
             <h3>Childcare Costs</h3>
@@ -142,7 +143,16 @@
         <button onclick="showPage('livingExpensesPage')">Next: Living Expenses</button>
     </div>
 
-    <div id="livingExpensesPage" class="page">
+    <script>
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        if (pageId === 'expensesPage') {
+            const isDINK = document.querySelector('input[name="familyType"]:checked').value === 'dink';
+            document.getElementById('childcareSection').style.display = isDINK ? 'none' : 'block';
+        }
+    }
+<div id="livingExpensesPage" class="page">
         <h2>Basic Living Expenses</h2>
         <div class="section">
             <h3>Monthly Living Costs</h3>
@@ -166,15 +176,56 @@
         <button onclick="showPage('taxesPage')">Next: Taxes</button>
     </div>
 
+    <div id="taxesPage" class="page">
+        <h2>Taxes and Growth Projections</h2>
+        <div class="section">
+            <h3>Tax Rates</h3>
+            <div class="explanation">
+                <p>Enter your estimated tax rates. These are rough estimates and may not reflect exact tax calculations.</p>
+            </div>
+            <div class="form-group">
+                <label for="federalTaxRate">Estimated Federal Tax Rate (%)</label>
+                <div class="info-link">
+                    <a href="https://www.irs.gov/filing/federal-income-tax-rates-and-brackets" target="_blank">Click here to review the Federal Income Tax Brackets</a>
+                </div>
+                <input type="number" id="federalTaxRate" value="22" required>
+            </div>
+            <div class="form-group">
+                <label for="stateTaxRate">Estimated State Tax Rate (%)</label>
+                <div class="info-link">
+                    <a href="https://help.nfc.usda.gov/systems/TAXES/index.php" target="_blank">Click here to review State Income Tax Brackets</a>
+                </div>
+                <input type="number" id="stateTaxRate" value="5" required>
+            </div>
+            <div class="form-group">
+                <label for="localTaxRate">Estimated Local Tax Rate (%)</label>
+                <input type="number" id="localTaxRate" value="1" required>
+            </div>
+        </div>
+        <div class="section">
+            <h3>Growth Projections</h3>
+            <div class="explanation">
+                <p>Estimate how you think your salaries and expenses might change over time.</p>
+            </div>
+            <div class="form-group">
+                <label for="salaryGrowth">Estimated Annual Salary Growth (%)</label>
+                <input type="number" id="salaryGrowth" value="3" required>
+            </div>
+            <div class="form-group">
+                <label for="expensesGrowth">Estimated Annual Increase in Expenses (%)</label>
+                <input type="number" id="expensesGrowth" value="2" required>
+            </div>
+            <div class="form-group">
+                <label for="childcareGrowth">Estimated Annual Increase in Childcare Costs (%)</label>
+                <input type="number" id="childcareGrowth" value="2" required>
+            </div>
+        </div>
+        <button onclick="showPage('livingExpensesPage')">Previous</button>
+        <button onclick="calculateResults()">Calculate Results</button>
+    </div>
+
     <script>
-    function showPage(pageId) {
-        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-        if (pageId === 'expensesPage') {
-            const isDINK = document.querySelector('input[name="familyType"]:checked').value === 'dink';
-            document.getElementById('childcareSection').style.display = isDINK ? 'none' : 'block';
-        }
-    }
+    // ... (previous showPage function remains the same)
 
     function calculateResults() {
         const isDINK = document.querySelector('input[name="familyType"]:checked').value === 'dink';
@@ -182,30 +233,41 @@
         const salary2 = parseFloat(document.getElementById('salary2').value);
         const leaveTime1 = parseFloat(document.getElementById('leaveTime1').value);
         const leaveTime2 = parseFloat(document.getElementById('leaveTime2').value);
-        const childCareCost = parseFloat(document.getElementById('childCareCost').value);
-        const childCareYears = Math.min(parseInt(document.getElementById('childCareYears').value), 5);
+        const childCareCost = isDINK ? 0 : parseFloat(document.getElementById('childCareCost').value);
+        const childCareYears = isDINK ? 0 : Math.min(parseInt(document.getElementById('childCareYears').value), 5);
         const healthcarePremium = parseFloat(document.getElementById('healthcarePremium').value);
         const healthcareOutOfPocket = parseFloat(document.getElementById('healthcareOutOfPocket').value);
         const housingCost = parseFloat(document.getElementById('housingCost').value) * 12;
         const transportationCost = parseFloat(document.getElementById('transportationCost').value) * 12;
         const foodUtilitiesCost = parseFloat(document.getElementById('foodUtilitiesCost').value) * 12;
+        const federalTaxRate = parseFloat(document.getElementById('federalTaxRate').value) / 100;
+        const stateTaxRate = parseFloat(document.getElementById('stateTaxRate').value) / 100;
+        const localTaxRate = parseFloat(document.getElementById('localTaxRate').value) / 100;
+        const salaryGrowth = parseFloat(document.getElementById('salaryGrowth').value) / 100;
+        const expensesGrowth = parseFloat(document.getElementById('expensesGrowth').value) / 100;
+        const childcareGrowth = parseFloat(document.getElementById('childcareGrowth').value) / 100;
 
-        // More calculation logic will be added here in the next section
-    }
+        const totalBasicLivingExpenses = housingCost + transportationCost + foodUtilitiesCost;
+        const totalTaxRate = federalTaxRate + stateTaxRate + localTaxRate;
+
+        let childcareScenarioData = [];
+        let workforceLeaveScenarioData = [];
+        let comparisonResults = '';
     </script>
+
 <div id="resultsPage" class="page">
         <h2>Your Projected Household Finances</h2>
         <div class="explanation">
-            <p>Below is a projection of your household finances over the next 15 years, including income, expenses, taxes, savings, and adjusting for inflation. We've calculated two scenarios: one where you use childcare services and another where one or both partners leave the workforce temporarily.</p>
+            <p>Below is a projection of your household finances over the next 15 years, comparing two scenarios: using childcare services and temporarily leaving the workforce. The comparison shows the net income for each scenario and the cumulative difference over time.</p>
         </div>
-        <h3>Scenario Comparison</h3>
         <table id="comparisonTable">
             <thead>
                 <tr>
                     <th>Year</th>
                     <th>Childcare Scenario Net Income</th>
                     <th>Workforce Leave Scenario Net Income</th>
-                    <th>Difference</th>
+                    <th>Annual Difference</th>
+                    <th>Cumulative Difference</th>
                 </tr>
             </thead>
             <tbody>
@@ -213,8 +275,8 @@
             </tbody>
         </table>
         
-        <h3>Financial Impact Summary</h3>
-        <div id="impactSummary" class="section">
+        <div id="summarySection" class="section">
+            <h3>Financial Impact Summary</h3>
             <p id="totalDifference"></p>
             <p id="breakEvenPoint"></p>
         </div>
@@ -224,51 +286,34 @@
             <p><a href="https://modernhusbands.com" target="_blank">Click here</a> to subscribe and download The Ultimate Guide to Family Planning for free. By subscribing to our free newsletter, you will receive ideas every couple of weeks on managing money and the home as a team.</p>
         </div>
         <button onclick="showPage('taxesPage')">Previous</button>
-        <button onclick="showPage('incomePage')">Start Over</button>
+        <button onclick="showPage('introPage')">Start Over</button>
     </div>
 
     <script>
-    // ... (previous JavaScript code remains the same)
+    // ... (previous showPage and beginning of calculateResults functions remain the same)
 
     function calculateResults() {
         // ... (previous variable declarations remain the same)
 
-        const federalTaxRate = parseFloat(document.getElementById('federalTaxRate').value) / 100;
-        const stateTaxRate = parseFloat(document.getElementById('stateTaxRate').value) / 100;
-        const localTaxRate = parseFloat(document.getElementById('localTaxRate').value) / 100;
-        const salaryGrowth = parseFloat(document.getElementById('salaryGrowth').value) / 100;
-        const childCareGrowth = parseFloat(document.getElementById('childCareGrowth').value) / 100;
-        const healthcareGrowth = parseFloat(document.getElementById('healthcareGrowth').value) / 100;
-        const livingExpensesGrowth = parseFloat(document.getElementById('livingExpensesGrowth').value) / 100;
-        const retirementContribution1 = parseFloat(document.getElementById('retirementContribution1').value) / 100;
-        const employerMatch1 = parseFloat(document.getElementById('employerMatch1').value) / 100;
-        const retirementContribution2 = parseFloat(document.getElementById('retirementContribution2').value) / 100;
-        const employerMatch2 = parseFloat(document.getElementById('employerMatch2').value) / 100;
-
-        const totalBasicLivingExpenses = housingCost + transportationCost + foodUtilitiesCost;
-
         let childcareScenarioData = [];
         let workforceLeaveScenarioData = [];
         let comparisonResults = '';
+        let cumulativeDifference = 0;
 
         for (let year = 1; year <= 15; year++) {
             // Childcare Scenario
             const projectedSalary1 = salary1 * Math.pow(1 + salaryGrowth, year - 1);
             const projectedSalary2 = salary2 * Math.pow(1 + salaryGrowth, year - 1);
             const grossIncome = projectedSalary1 + projectedSalary2;
-
-            const projectedChildCareCost = year <= childCareYears ? childCareCost * Math.pow(1 + childCareGrowth, year - 1) : 0;
-            const projectedHealthcareCost = (healthcarePremium + healthcareOutOfPocket) * Math.pow(1 + healthcareGrowth, year - 1);
-            const projectedBasicLivingExpenses = totalBasicLivingExpenses * Math.pow(1 + livingExpensesGrowth, year - 1);
-
-            const retirementSavings1 = projectedSalary1 * (retirementContribution1 + Math.min(retirementContribution1, employerMatch1));
-            const retirementSavings2 = projectedSalary2 * (retirementContribution2 + Math.min(retirementContribution2, employerMatch2));
-            const totalRetirementSavings = retirementSavings1 + retirementSavings2;
-
-            const taxableIncome = grossIncome - totalRetirementSavings;
-            const taxes = taxableIncome * (federalTaxRate + stateTaxRate + localTaxRate);
-
-            const childcareScenarioNetIncome = grossIncome - taxes - projectedChildCareCost - projectedHealthcareCost - projectedBasicLivingExpenses - totalRetirementSavings;
+            
+            const projectedChildCareCost = year <= childCareYears ? childCareCost * Math.pow(1 + childcareGrowth, year - 1) : 0;
+            const projectedLivingExpenses = totalBasicLivingExpenses * Math.pow(1 + expensesGrowth, year - 1);
+            const projectedHealthcareCost = (healthcarePremium + healthcareOutOfPocket) * Math.pow(1 + expensesGrowth, year - 1);
+            
+            const taxableIncome = grossIncome - projectedChildCareCost;
+            const taxes = taxableIncome * totalTaxRate;
+            
+            const childcareScenarioNetIncome = grossIncome - taxes - projectedChildCareCost - projectedHealthcareCost - projectedLivingExpenses;
             childcareScenarioData.push(childcareScenarioNetIncome);
 
             // Workforce Leave Scenario
@@ -279,35 +324,41 @@
             if (year <= leaveTime2) leaveScenarioSalary2 = 0;
 
             const leaveScenarioGrossIncome = leaveScenarioSalary1 + leaveScenarioSalary2;
-            const leaveScenarioTaxableIncome = leaveScenarioGrossIncome - (leaveScenarioSalary1 > 0 ? retirementSavings1 : 0) - (leaveScenarioSalary2 > 0 ? retirementSavings2 : 0);
-            const leaveScenarioTaxes = leaveScenarioTaxableIncome * (federalTaxRate + stateTaxRate + localTaxRate);
+            const leaveScenarioTaxableIncome = leaveScenarioGrossIncome;
+            const leaveScenarioTaxes = leaveScenarioTaxableIncome * totalTaxRate;
 
-            const workforceLeaveScenarioNetIncome = leaveScenarioGrossIncome - leaveScenarioTaxes - projectedHealthcareCost - projectedBasicLivingExpenses - (leaveScenarioSalary1 > 0 ? retirementSavings1 : 0) - (leaveScenarioSalary2 > 0 ? retirementSavings2 : 0);
+            const workforceLeaveScenarioNetIncome = leaveScenarioGrossIncome - leaveScenarioTaxes - projectedHealthcareCost - projectedLivingExpenses;
             workforceLeaveScenarioData.push(workforceLeaveScenarioNetIncome);
 
-            const difference = childcareScenarioNetIncome - workforceLeaveScenarioNetIncome;
+            const annualDifference = childcareScenarioNetIncome - workforceLeaveScenarioNetIncome;
+            cumulativeDifference += annualDifference;
 
             comparisonResults += `<tr>
                 <td>${year}</td>
                 <td>$${Math.round(childcareScenarioNetIncome).toLocaleString()}</td>
                 <td>$${Math.round(workforceLeaveScenarioNetIncome).toLocaleString()}</td>
-                <td>$${Math.round(difference).toLocaleString()}</td>
+                <td>$${Math.round(annualDifference).toLocaleString()}</td>
+                <td>$${Math.round(cumulativeDifference).toLocaleString()}</td>
             </tr>`;
         }
 
         document.getElementById('comparisonTable').getElementsByTagName('tbody')[0].innerHTML = comparisonResults;
-        renderImpactSummary(childcareScenarioData, workforceLeaveScenarioData);
+        renderSummary(childcareScenarioData, workforceLeaveScenarioData, cumulativeDifference);
         showPage('resultsPage');
     }
 
-    function renderImpactSummary(childcareScenarioData, workforceLeaveScenarioData) {
-        const totalDifference = childcareScenarioData.reduce((sum, value, index) => sum + value - workforceLeaveScenarioData[index], 0);
-        const breakEvenYear = childcareScenarioData.findIndex((value, index) => value > workforceLeaveScenarioData[index]) + 1;
+    function renderSummary(childcareScenarioData, workforceLeaveScenarioData, totalDifference) {
+        const breakEvenYear = workforceLeaveScenarioData.findIndex((value, index) => value > childcareScenarioData[index]) + 1;
 
         document.getElementById('totalDifference').textContent = `Total 15-Year Difference: $${Math.round(totalDifference).toLocaleString()}`;
-        document.getElementById('breakEvenPoint').textContent = breakEvenYear > 0 && breakEvenYear <= 15 ? 
-            `Break-even Point: Year ${breakEvenYear}` : 
-            "Break-even point not reached within 15 years";
+        
+        if (breakEvenYear > 0 && breakEvenYear <= 15) {
+            document.getElementById('breakEvenPoint').textContent = `Break-even Point: Year ${breakEvenYear}`;
+        } else if (totalDifference > 0) {
+            document.getElementById('breakEvenPoint').textContent = "The childcare scenario remains financially advantageous throughout the 15-year period.";
+        } else {
+            document.getElementById('breakEvenPoint').textContent = "The workforce leave scenario remains financially advantageous throughout the 15-year period.";
+        }
     }
     </script>
 </body>
