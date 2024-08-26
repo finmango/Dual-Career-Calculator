@@ -25,6 +25,8 @@
         .info-link { font-size: 0.8em; margin-bottom: 5px; }
         .impact-summary { margin-top: 20px; }
         .impact-summary ul { padding-left: 20px; }
+        details { margin-top: 10px; }
+        summary { cursor: pointer; color: #007bff; }
     </style>
 </head>
 <body>
@@ -138,7 +140,7 @@
             </div>
         </div>
         <button onclick="showPage('incomePage')">Previous</button>
-        <button onclick="showPage('livingExpensesPage')">Next: Living Expenses</button>
+        <button onclick="showPage('livingExpensesPage')">Next: Basic Living Expenses</button>
     </div>
 
     <div id="livingExpensesPage" class="page">
@@ -146,19 +148,25 @@
         <div class="section">
             <h3>Monthly Living Costs</h3>
             <div class="explanation">
-                <p>Enter your estimated monthly expenses for essential living costs. These will be factored into your net income calculations.</p>
+                <p>Enter your total monthly basic living expenses. This should include your current costs for housing, transportation, food, and utilities. Do not include any future child-related expenses here.</p>
             </div>
             <div class="form-group">
-                <label for="housingCost">Monthly Housing Costs (Rent/Mortgage) ($)</label>
-                <input type="number" id="housingCost" value="1500" required>
-            </div>
-            <div class="form-group">
-                <label for="transportationCost">Monthly Transportation Costs (Car payments, insurance, public transit) ($)</label>
-                <input type="number" id="transportationCost" value="500" required>
-            </div>
-            <div class="form-group">
-                <label for="foodUtilitiesCost">Monthly Food and Utilities Costs ($)</label>
-                <input type="number" id="foodUtilitiesCost" value="800" required>
+                <label for="basicLivingExpenses">Total Monthly Basic Living Expenses ($)</label>
+                <input type="number" id="basicLivingExpenses" value="2800" required>
+                <div class="info-link">
+                    <details>
+                        <summary>What does this include?</summary>
+                        <p>This total should include your current monthly expenses for:</p>
+                        <ul>
+                            <li>Housing (rent/mortgage)</li>
+                            <li>Transportation (car payments, insurance, public transit)</li>
+                            <li>Food</li>
+                            <li>Utilities</li>
+                        </ul>
+                        <p>The pre-filled value ($2800) is based on previous estimates: $1500 for housing, $500 for transportation, and $800 for food and utilities.</p>
+                        <p><strong>Note:</strong> Do not include any future child-related expenses in this total. Those are accounted for separately.</p>
+                    </details>
+                </div>
             </div>
         </div>
         <button onclick="showPage('expensesPage')">Previous</button>
@@ -238,8 +246,7 @@
         <button onclick="showPage('taxesPage')">Previous</button>
         <button onclick="calculateResults()">Calculate Results</button>
     </div>
-
-    <div id="resultsPage" class="page">
+<div id="resultsPage" class="page">
         <h2>Your Projected Household Finances</h2>
         <div class="explanation">
             <p>Below is a projection of your household finances over the next 15 years, including income, expenses, taxes, savings, and adjusting for inflation. The Annual Cost Per Child combines your entered childcare costs and the annual cost of one child. According to the USDA, the estimated annual cost per child is $18,000 in 2024. Remember, this estimate is based on the information you provided and uses simplified tax calculations.</p>
@@ -271,7 +278,8 @@
         <button onclick="showPage('projectionPage')">Previous</button>
         <button onclick="showPage('incomePage')">Start Over</button>
     </div>
-<script>
+
+    <script>
     function showPage(pageId) {
         document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
@@ -291,9 +299,7 @@
         const childCareYears = isDINK ? 0 : Math.min(parseInt(document.getElementById('childCareYears').value), 5);
         const healthcarePremium = parseFloat(document.getElementById('healthcarePremium').value);
         const healthcareOutOfPocket = parseFloat(document.getElementById('healthcareOutOfPocket').value);
-        const housingCost = parseFloat(document.getElementById('housingCost').value) * 12;
-        const transportationCost = parseFloat(document.getElementById('transportationCost').value) * 12;
-        const foodUtilitiesCost = parseFloat(document.getElementById('foodUtilitiesCost').value) * 12;
+        const basicLivingExpenses = parseFloat(document.getElementById('basicLivingExpenses').value) * 12;
         const federalTaxRate = parseFloat(document.getElementById('federalTaxRate').value) / 100;
         const stateTaxRate = parseFloat(document.getElementById('stateTaxRate').value) / 100;
         const localTaxRate = parseFloat(document.getElementById('localTaxRate').value) / 100;
@@ -307,7 +313,6 @@
         const employerMatch2 = parseFloat(document.getElementById('employerMatch2').value) / 100;
 
         const baselineChildCareCosts = [14440, 14832, 15277, 15735, 16207, 20866, 21493, 22138, 22802, 23486, 24190, 24916, 25664, 26434, 27227];
-        const totalBasicLivingExpenses = housingCost + transportationCost + foodUtilitiesCost;
 
         let results = '';
         let currentScenarioTotal = 0;
@@ -335,7 +340,7 @@
             }
 
             const projectedHealthcareCost = (healthcarePremium + healthcareOutOfPocket) * Math.pow(1 + healthcareGrowth, year - 1);
-            const projectedBasicLivingExpenses = totalBasicLivingExpenses * Math.pow(1 + livingExpensesGrowth, year - 1);
+            const projectedBasicLivingExpenses = basicLivingExpenses * Math.pow(1 + livingExpensesGrowth, year - 1);
 
             const retirementSavings1 = projectedSalary1 * (retirementContribution1 + Math.min(retirementContribution1, employerMatch1));
             const retirementSavings2 = projectedSalary2 * (retirementContribution2 + Math.min(retirementContribution2, employerMatch2));
