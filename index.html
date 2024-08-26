@@ -28,7 +28,7 @@
     </style>
     <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://unpkg.com/recharts@2.1.9/umd/Recharts.min.js"></script>
 </head>
 <body>
@@ -275,8 +275,7 @@
         <button onclick="showPage('projectionPage')">Previous</button>
         <button onclick="showPage('incomePage')">Start Over</button>
     </div>
-
-    <script type="text/babel">
+<script type="text/babel">
         const { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } = Recharts;
 
         function FinancialImpactSection({ currentScenario, continuousEmployment, dinkScenario }) {
@@ -286,36 +285,46 @@
                 { name: 'DINK Scenario', value: dinkScenario }
             ];
 
-            return (
-                <div className="section">
-                    <h3>Financial Impact of Career Decisions</h3>
-                    <div className="explanation">
-                        <p>This section compares your current plan with two alternative scenarios over 15 years:</p>
-                        <ul>
-                            <li><strong>Continuous Employment:</strong> Both partners work continuously, using childcare services.</li>
-                            <li><strong>DINK Scenario:</strong> Dual Income, No Kids - for comparison purposes.</li>
-                        </ul>
-                    </div>
-                    
-                    <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={data}>
-                            <XAxis dataKey="name" />
-                            <YAxis label={{ value: 'Total Net Income Over 15 Years ($)', angle: -90, position: 'insideLeft' }} />
-                            <Tooltip formatter={(value) => `$${value.toLocaleString()}`} />
-                            <Legend />
-                            <Bar dataKey="value" fill="#8884d8" />
-                        </BarChart>
-                    </ResponsiveContainer>
-
-                    <div className="impact-summary">
-                        <h4>Key Takeaways:</h4>
-                        <ul>
-                            <li>Your current plan results in a total net income of ${currentScenario.toLocaleString()} over 15 years.</li>
-                            <li>Continuous employment could result in ${continuousEmployment.toLocaleString()} - a difference of ${(continuousEmployment - currentScenario).toLocaleString()}.</li>
-                            <li>A DINK scenario would result in ${dinkScenario.toLocaleString()} - ${(dinkScenario - currentScenario).toLocaleString()} more than your current plan.</li>
-                        </ul>
-                    </div>
-                </div>
+            return React.createElement(
+                "div",
+                { className: "section" },
+                React.createElement("h3", null, "Financial Impact of Career Decisions"),
+                React.createElement(
+                    "div",
+                    { className: "explanation" },
+                    React.createElement("p", null, "This section compares your current plan with two alternative scenarios over 15 years:"),
+                    React.createElement(
+                        "ul",
+                        null,
+                        React.createElement("li", null, React.createElement("strong", null, "Continuous Employment:"), " Both partners work continuously, using childcare services."),
+                        React.createElement("li", null, React.createElement("strong", null, "DINK Scenario:"), " Dual Income, No Kids - for comparison purposes.")
+                    )
+                ),
+                React.createElement(
+                    ResponsiveContainer,
+                    { width: "100%", height: 300 },
+                    React.createElement(
+                        BarChart,
+                        { data: data },
+                        React.createElement(XAxis, { dataKey: "name" }),
+                        React.createElement(YAxis, { label: { value: 'Total Net Income Over 15 Years ($)', angle: -90, position: 'insideLeft' } }),
+                        React.createElement(Tooltip, { formatter: (value) => `$${value.toLocaleString()}` }),
+                        React.createElement(Legend, null),
+                        React.createElement(Bar, { dataKey: "value", fill: "#8884d8" })
+                    )
+                ),
+                React.createElement(
+                    "div",
+                    { className: "impact-summary" },
+                    React.createElement("h4", null, "Key Takeaways:"),
+                    React.createElement(
+                        "ul",
+                        null,
+                        React.createElement("li", null, `Your current plan results in a total net income of $${currentScenario.toLocaleString()} over 15 years.`),
+                        React.createElement("li", null, `Continuous employment could result in $${continuousEmployment.toLocaleString()} - a difference of $${(continuousEmployment - currentScenario).toLocaleString()}.`),
+                        React.createElement("li", null, `A DINK scenario would result in $${dinkScenario.toLocaleString()} - $${(dinkScenario - currentScenario).toLocaleString()} more than your current plan.`)
+                    )
+                )
             );
         }
 
@@ -327,13 +336,6 @@
                 document.getElementById('childcareSection').style.display = isDINK ? 'none' : 'block';
             }
         }
-
-        function calculateResults() {
-            // Calculation logic will be implemented here
-        }
-    </script>
-<script type="text/babel">
-        // ... (previous JavaScript code remains the same)
 
         function calculateResults() {
             const isDINK = document.querySelector('input[name="familyType"]:checked').value === 'dink';
@@ -430,11 +432,11 @@
             document.getElementById('resultsTable').getElementsByTagName('tbody')[0].innerHTML = results;
 
             ReactDOM.render(
-                <FinancialImpactSection
-                    currentScenario={Math.round(currentScenarioTotal)}
-                    continuousEmployment={Math.round(continuousEmploymentTotal)}
-                    dinkScenario={Math.round(dinkScenarioTotal)}
-                />,
+                React.createElement(FinancialImpactSection, {
+                    currentScenario: Math.round(currentScenarioTotal),
+                    continuousEmployment: Math.round(continuousEmploymentTotal),
+                    dinkScenario: Math.round(dinkScenarioTotal)
+                }),
                 document.getElementById('financialImpactSection')
             );
 
