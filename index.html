@@ -106,7 +106,8 @@
         <button onclick="showPage('introPage')">Previous</button>
         <button onclick="showPage('expensesPage')">Next: Expenses</button>
     </div>
-<div id="expensesPage" class="page">
+
+    <div id="expensesPage" class="page">
         <h2>Expenses</h2>
         <div id="childcareSection" class="section">
             <h3>Additional Childcare Costs</h3>
@@ -139,14 +140,8 @@
                 <input type="number" id="healthcareOutOfPocket" value="2000" required>
             </div>
         </div>
-        <button onclick="showPage('incomePage')">Previous</button>
-        <button onclick="showPage('livingExpensesPage')">Next: Basic Living Expenses</button>
-    </div>
-
-    <div id="livingExpensesPage" class="page">
-        <h2>Basic Living Expenses</h2>
         <div class="section">
-            <h3>Monthly Living Costs</h3>
+            <h3>Basic Living Expenses</h3>
             <div class="explanation">
                 <p>Enter your total monthly basic living expenses. This should include your current costs for housing, transportation, food, and utilities. Do not include any future child-related expenses here.</p>
             </div>
@@ -169,11 +164,10 @@
                 </div>
             </div>
         </div>
-        <button onclick="showPage('expensesPage')">Previous</button>
+        <button onclick="showPage('incomePage')">Previous</button>
         <button onclick="showPage('taxesPage')">Next: Taxes</button>
     </div>
-
-    <div id="taxesPage" class="page">
+<div id="taxesPage" class="page">
         <h2>Taxes</h2>
         <div class="section">
             <h3>Tax Rates</h3>
@@ -199,7 +193,7 @@
                 <input type="number" id="localTaxRate" value="1" required>
             </div>
         </div>
-        <button onclick="showPage('livingExpensesPage')">Previous</button>
+        <button onclick="showPage('expensesPage')">Previous</button>
         <button onclick="showPage('projectionPage')">Next: Growth Projections</button>
     </div>
 
@@ -246,7 +240,8 @@
         <button onclick="showPage('taxesPage')">Previous</button>
         <button onclick="calculateResults()">Calculate Results</button>
     </div>
-<div id="resultsPage" class="page">
+
+    <div id="resultsPage" class="page">
         <h2>Your Projected Household Finances</h2>
         <div class="explanation">
             <p>Below is a projection of your household finances over the next 15 years, including income, expenses, taxes, savings, and adjusting for inflation. The Annual Cost Per Child combines your entered childcare costs and the annual cost of one child. According to the USDA, the estimated annual cost per child is $18,000 in 2024. Remember, this estimate is based on the information you provided and uses simplified tax calculations.</p>
@@ -268,8 +263,7 @@
                 <!-- Results will be inserted here by JavaScript -->
             </tbody>
         </table>
-        
-        <div id="financialImpactSection"></div>
+<div id="financialImpactSection"></div>
         
         <div class="explanation">
             <p><a href="https://finmango.org" target="_blank">FinMango</a> is a nonprofit advancing financial health worldwide and <a href="https://modernhusbands.com" target="_blank">Modern Husbands</a> helps couples manage their money and their home.</p>
