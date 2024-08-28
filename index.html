@@ -307,6 +307,7 @@
     }
 
     function calculateResults() {
+        console.log("Calculating results..."); // Debug log
         const isDINK = document.querySelector('input[name="familyType"]:checked').value === 'dink';
         const salary1 = parseFloat(document.getElementById('salary1').value);
         const salary2 = parseFloat(document.getElementById('salary2').value);
@@ -428,8 +429,22 @@
 
         updateChartData(currentScenarioTotalImpact, continuousEmploymentTotalImpact, dinkScenarioTotalImpact);
 
+        console.log("Showing results page"); // Debug log
         showPage('resultsPage');
     }
+
+    // Add event listeners when the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const action = this.getAttribute('onclick');
+                if (action) {
+                    e.preventDefault(); // Prevent default button behavior
+                    eval(action); // Execute the onclick attribute content
+                }
+            });
+        });
+    });
     </script>
 </body>
 </html>
