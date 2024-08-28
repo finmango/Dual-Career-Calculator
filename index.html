@@ -111,7 +111,7 @@
         <div id="childcareSection" class="section">
             <h3>Additional Childcare Costs</h3>
             <div class="explanation">
-                <p>Enter any additional annual childcare costs (e.g., daycare) beyond the baseline costs already included in our calculations. This will be added to our baseline for up to 5 years or until the child turns 6, whichever comes first.</p>
+                <p>Enter any additional annual childcare costs (e.g., daycare) beyond the baseline costs already included in our calculations. This will be added to our baseline for up to 5 years.</p>
             </div>
             <div class="form-group">
                 <label for="childCareCost">Additional Annual Childcare Cost ($)</label>
@@ -287,7 +287,7 @@
         const retirementContribution2 = parseFloat(document.getElementById('retirementContribution2').value) / 100;
         const employerMatch2 = parseFloat(document.getElementById('employerMatch2').value) / 100;
 
-        const baselineChildCareCosts = [14440, 14832, 15277, 15735, 16207, 20866, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        const baselineChildCareCosts = [14440, 14832, 15277, 15735, 16207, 20866, 21493, 22138, 22802, 23486, 24190, 24916, 25664, 26434, 27227];
         const backToWorkYear = Math.max(workforceLeaveDuration1, workforceLeaveDuration2) + 1;
 
         let results = '';
@@ -309,13 +309,8 @@
 
             let projectedChildCareCost = 0;
             if (!isDINK) {
-                // Baseline costs (only apply for first 6 years)
-                if (year <= 6) {
-                    projectedChildCareCost = baselineChildCareCosts[year - 1];
-                }
-                
-                // Additional costs (apply based on workforce leave, but only up to year 6)
-                if (year >= backToWorkYear && year < backToWorkYear + childCareYears && year <= 6) {
+                projectedChildCareCost = baselineChildCareCosts[year - 1];
+                if (year >= backToWorkYear && year < backToWorkYear + childCareYears && year <= 5) {
                     projectedChildCareCost += additionalChildCareCost * Math.pow(1 + childCareGrowth, year - backToWorkYear);
                 }
             }
