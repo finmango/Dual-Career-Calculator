@@ -375,28 +375,13 @@
                 <div class="impact-summary">
                     <h4>Key Takeaways:</h4>
                     <ul>
-                        <li>Your current plan results in:
-                            <ul>
-                                <li>Total net income: $${Math.round(currentScenarioTotal).toLocaleString()}</li>
-                                <li>Retirement savings: $${Math.round(currentScenarioRetirementSavings).toLocaleString()}</li>
-                                <li>Total financial impact: $${Math.round(currentScenarioTotal + currentScenarioRetirementSavings).toLocaleString()}</li>
-                            </ul>
-                        </li>
-                        <li>Continuous employment could result in:
-                            <ul>
-                                <li>Total net income: $${Math.round(continuousEmploymentTotal).toLocaleString()}</li>
-                                <li>Retirement savings: $${Math.round(continuousEmploymentRetirementSavings).toLocaleString()}</li>
-                                <li>Total financial impact: $${Math.round(continuousEmploymentTotal + continuousEmploymentRetirementSavings).toLocaleString()}</li>
-                            </ul>
-                        </li>
-                        <li>A DINK scenario would result in:
-                            <ul>
-                                <li>Total net income: $${Math.round(dinkScenarioTotal).toLocaleString()}</li>
-                                <li>Retirement savings: $${Math.round(dinkScenarioRetirementSavings).toLocaleString()}</li>
-                                <li>Total financial impact: $${Math.round(dinkScenarioTotal + dinkScenarioRetirementSavings).toLocaleString()}</li>
-                            </ul>
-                        </li>
+                        <li>Your current plan results in a total financial impact of $${Math.round(currentScenarioTotal + currentScenarioRetirementSavings).toLocaleString()} over 15 years.</li>
+                        <li>Continuous employment could result in $${Math.round(continuousEmploymentTotal + continuousEmploymentRetirementSavings).toLocaleString()} - a difference of $${Math.round((continuousEmploymentTotal + continuousEmploymentRetirementSavings) - (currentScenarioTotal + currentScenarioRetirementSavings)).toLocaleString()}.</li>
+                        <li>A DINK scenario would result in $${Math.round(dinkScenarioTotal + dinkScenarioRetirementSavings).toLocaleString()} - $${Math.round((dinkScenarioTotal + dinkScenarioRetirementSavings) - (currentScenarioTotal + currentScenarioRetirementSavings)).toLocaleString()} more than your current plan.</li>
                     </ul>
+                </div>
+                <div class="explanation">
+                    <p>Note: The total financial impact includes both net income and projected retirement savings growth.</p>
                 </div>
             </div>
         `;
