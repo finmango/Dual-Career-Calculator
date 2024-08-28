@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Family Financial Planning Calculator</title>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <style>
         body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6; }
         h1, h2, h3 { color: #333; }
@@ -224,7 +223,8 @@
         <button onclick="showPage('taxesPage')">Previous</button>
         <button onclick="calculateResults()">Calculate Results</button>
     </div>
-<div id="resultsPage" class="page">
+
+    <div id="resultsPage" class="page">
         <h2>Your Projected Household Finances</h2>
         <div class="explanation">
             <p>Below is a projection of your household finances over the next 15 years, including income, expenses, taxes, retirement savings, and adjusting for inflation.</p>
@@ -255,48 +255,7 @@
         <button onclick="showPage('projectionPage')">Previous</button>
         <button onclick="showPage('incomePage')">Start Over</button>
     </div>
-
-    <script>
-    google.charts.load('current', {'packages':['corechart']});
-    google.charts.setOnLoadCallback(drawChart);
-
-    function drawChart() {
-      var data = google.visualization.arrayToDataTable([
-        ['Scenario', 'Total Financial Impact', { role: 'style' }],
-        ['Current Plan', 0, '#3366cc'],
-        ['Continuous Employment', 0, '#dc3912'],
-        ['DINK Scenario', 0, '#ff9900']
-      ]);
-
-      var options = {
-        title: 'Financial Impact of Career Decisions',
-        legend: { position: 'none' },
-        chart: {
-          title: 'Financial Impact of Career Decisions',
-          subtitle: '15-year projection including net income and retirement savings'
-        },
-        bars: 'vertical',
-        vAxis: {format: 'currency'},
-        height: 400,
-        width: '100%'
-      };
-
-      var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-      chart.draw(data, options);
-    }
-
-    function updateChartData(currentPlan, continuousEmployment, dinkScenario) {
-      var data = google.visualization.arrayToDataTable([
-        ['Scenario', 'Total Financial Impact', { role: 'style' }],
-        ['Current Plan', currentPlan, '#3366cc'],
-        ['Continuous Employment', continuousEmployment, '#dc3912'],
-        ['DINK Scenario', dinkScenario, '#ff9900']
-      ]);
-
-      var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-      chart.draw(data, options);
-    }
-
+<script>
     function showPage(pageId) {
         document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
@@ -307,7 +266,6 @@
     }
 
     function calculateResults() {
-        console.log("Calculating results..."); // Debug log
         const isDINK = document.querySelector('input[name="familyType"]:checked').value === 'dink';
         const salary1 = parseFloat(document.getElementById('salary1').value);
         const salary2 = parseFloat(document.getElementById('salary2').value);
@@ -406,14 +364,20 @@
             <div class="section">
                 <h3>Financial Impact of Career Decisions</h3>
                 <div class="explanation">
-                    <p>This graph compares your current plan with two alternative scenarios over 15 years, including accumulated retirement savings with a conservative 5% annual return:</p>
+                    <p>This section compares your current plan with two alternative scenarios over 15 years, including accumulated retirement savings with a conservative 5% annual return:</p>
                     <ul>
-                        <li><strong>Current Plan:</strong> Your inputted scenario.</li>
                         <li><strong>Continuous Employment:</strong> Both partners work continuously, using childcare services.</li>
                         <li><strong>DINK Scenario:</strong> Dual Income, No Kids - for comparison purposes.</li>
                     </ul>
                 </div>
-                <div id="chart_div" style="width: 100%; height: 400px;"></div>
+                <div class="impact-summary">
+                    <h4>Key Takeaways:</h4>
+                    <ul>
+                        <li>Your current plan results in a total financial impact of $${Math.round(currentScenarioTotal + currentScenarioRetirementSavings).toLocaleString()} over 15 years.</li>
+                        <li>Continuous employment could result in $${Math.round(continuousEmploymentTotal + continuousEmploymentRetirementSavings).toLocaleString()} - a difference of $${Math.round((continuousEmploymentTotal + continuousEmploymentRetirementSavings) - (currentScenarioTotal + currentScenarioRetirementSavings)).toLocaleString()}.</li>
+                        <li>A DINK scenario would result in $${Math.round(dinkScenarioTotal + dinkScenarioRetirementSavings).toLocaleString()} - $${Math.round((dinkScenarioTotal + dinkScenarioRetirementSavings) - (currentScenarioTotal + currentScenarioRetirementSavings)).toLocaleString()} more than your current plan.</li>
+                    </ul>
+                </div>
                 <div class="explanation">
                     <p>Note: The total financial impact includes both net income and projected retirement savings growth.</p>
                 </div>
@@ -422,29 +386,8 @@
 
         document.getElementById('financialImpactSection').innerHTML = financialImpactHTML;
 
-        // Update the chart data
-        const currentScenarioTotalImpact = currentScenarioTotal + currentScenarioRetirementSavings;
-        const continuousEmploymentTotalImpact = continuousEmploymentTotal + continuousEmploymentRetirementSavings;
-        const dinkScenarioTotalImpact = dinkScenarioTotal + dinkScenarioRetirementSavings;
-
-        updateChartData(currentScenarioTotalImpact, continuousEmploymentTotalImpact, dinkScenarioTotalImpact);
-
-        console.log("Showing results page"); // Debug log
         showPage('resultsPage');
     }
-
-    // Add event listeners when the DOM is fully loaded
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('button').forEach(button => {
-            button.addEventListener('click', function(e) {
-                const action = this.getAttribute('onclick');
-                if (action) {
-                    e.preventDefault(); // Prevent default button behavior
-                    eval(action); // Execute the onclick attribute content
-                }
-            });
-        });
-    });
     </script>
 </body>
 </html>
