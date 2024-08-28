@@ -289,11 +289,15 @@
 
         const baselineChildCareCosts = [14440, 14832, 15277, 15735, 16207, 20866, 21493, 22138, 22802, 23486, 24190, 24916, 25664, 26434, 27227];
         const backToWorkYear = Math.max(workforceLeaveDuration1, workforceLeaveDuration2) + 1;
+        const conservativeReturnRate = 0.05; // 5% annual return on retirement savings
 
         let results = '';
         let currentScenarioTotal = 0;
+        let currentScenarioRetirementSavings = 0;
         let continuousEmploymentTotal = 0;
+        let continuousEmploymentRetirementSavings = 0;
         let dinkScenarioTotal = 0;
+        let dinkScenarioRetirementSavings = 0;
 
         for (let year = 1; year <= 15; year++) {
             let projectedSalary1 = salary1 * Math.pow(1 + salaryGrowth, year - 1);
@@ -327,6 +331,7 @@
             const netIncome = grossIncome - taxes - projectedChildCareCost - projectedBasicLivingExpenses - totalRetirementSavings;
 
             currentScenarioTotal += netIncome;
+            currentScenarioRetirementSavings = (currentScenarioRetirementSavings + totalRetirementSavings) * (1 + conservativeReturnRate);
 
             // Calculate continuous employment scenario
             const continuousEmploymentSalary1 = salary1 * Math.pow(1 + salaryGrowth, year - 1);
@@ -336,10 +341,12 @@
             const continuousEmploymentTaxes = continuousEmploymentTaxableIncome * (federalTaxRate + stateTaxRate + localTaxRate);
             const continuousEmploymentNetIncome = continuousEmploymentGrossIncome - continuousEmploymentTaxes - projectedChildCareCost - projectedBasicLivingExpenses - totalRetirementSavings;
             continuousEmploymentTotal += continuousEmploymentNetIncome;
+            continuousEmploymentRetirementSavings = (continuousEmploymentRetirementSavings + totalRetirementSavings) * (1 + conservativeReturnRate);
 
             // Calculate DINK scenario
             const dinkNetIncome = continuousEmploymentGrossIncome - continuousEmploymentTaxes - projectedBasicLivingExpenses - totalRetirementSavings;
             dinkScenarioTotal += dinkNetIncome;
+            dinkScenarioRetirementSavings = (dinkScenarioRetirementSavings + totalRetirementSavings) * (1 + conservativeReturnRate);
 
             results += `<tr>
                 <td>${year}</td>
@@ -359,7 +366,7 @@
             <div class="section">
                 <h3>Financial Impact of Career Decisions</h3>
                 <div class="explanation">
-                    <p>This section compares your current plan with two alternative scenarios over 15 years:</p>
+                    <p>This section compares your current plan with two alternative scenarios over 15 years, including accumulated retirement savings with a conservative 5% annual return:</p>
                     <ul>
                         <li><strong>Continuous Employment:</strong> Both partners work continuously, using childcare services.</li>
                         <li><strong>DINK Scenario:</strong> Dual Income, No Kids - for comparison purposes.</li>
@@ -368,9 +375,27 @@
                 <div class="impact-summary">
                     <h4>Key Takeaways:</h4>
                     <ul>
-                        <li>Your current plan results in a total net income of $${Math.round(currentScenarioTotal).toLocaleString()} over 15 years.</li>
-                        <li>Continuous employment could result in $${Math.round(continuousEmploymentTotal).toLocaleString()} - a difference of $${Math.round(continuousEmploymentTotal - currentScenarioTotal).toLocaleString()}.</li>
-                        <li>A DINK scenario would result in $${Math.round(dinkScenarioTotal).toLocaleString()} - $${Math.round(dinkScenarioTotal - currentScenarioTotal).toLocaleString()} more than your current plan.</li>
+                        <li>Your current plan results in:
+                            <ul>
+                                <li>Total net income: $${Math.round(currentScenarioTotal).toLocaleString()}</li>
+                                <li>Retirement savings: $${Math.round(currentScenarioRetirementSavings).toLocaleString()}</li>
+                                <li>Total financial impact: $${Math.round(currentScenarioTotal + currentScenarioRetirementSavings).toLocaleString()}</li>
+                            </ul>
+                        </li>
+                        <li>Continuous employment could result in:
+                            <ul>
+                                <li>Total net income: $${Math.round(continuousEmploymentTotal).toLocaleString()}</li>
+                                <li>Retirement savings: $${Math.round(continuousEmploymentRetirementSavings).toLocaleString()}</li>
+                                <li>Total financial impact: $${Math.round(continuousEmploymentTotal + continuousEmploymentRetirementSavings).toLocaleString()}</li>
+                            </ul>
+                        </li>
+                        <li>A DINK scenario would result in:
+                            <ul>
+                                <li>Total net income: $${Math.round(dinkScenarioTotal).toLocaleString()}</li>
+                                <li>Retirement savings: $${Math.round(dinkScenarioRetirementSavings).toLocaleString()}</li>
+                                <li>Total financial impact: $${Math.round(dinkScenarioTotal + dinkScenarioRetirementSavings).toLocaleString()}</li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>
