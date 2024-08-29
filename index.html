@@ -233,7 +233,9 @@
     </div>
     <div class="section">
         <h3>Financial Impact of Career Decisions</h3>
-        <canvas id="financialImpactChart"></canvas>
+        <div style="height: 300px; max-width: 600px; margin: auto;">
+            <canvas id="financialImpactChart"></canvas>
+        </div>
         <div class="explanation">
             <p>This chart compares your current plan with two alternative scenarios over 15 years, including accumulated retirement savings with a conservative 5% annual return:</p>
             <ul>
@@ -384,12 +386,12 @@ function calculateResults() {
                     Math.round(dinkScenarioTotal + dinkScenarioRetirementSavings)
                 ],
                 backgroundColor: [
-                    'rgba(75, 192, 192, 0.6)',
-                    'rgba(54, 162, 235, 0.6)',
-                    'rgba(255, 206, 86, 0.6)'
+                    'rgba(255, 99, 132, 0.8)',
+                    'rgba(54, 162, 235, 0.8)',
+                    'rgba(255, 206, 86, 0.8)'
                 ],
                 borderColor: [
-                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 99, 132, 1)',
                     'rgba(54, 162, 235, 1)',
                     'rgba(255, 206, 86, 1)'
                 ],
@@ -398,17 +400,31 @@ function calculateResults() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 y: {
                     beginAtZero: true,
                     ticks: {
                         callback: function(value) {
                             return '$' + value.toLocaleString();
+                        },
+                        font: {
+                            size: 10
+                        }
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: {
+                            size: 10
                         }
                     }
                 }
             },
             plugins: {
+                legend: {
+                    display: false
+                },
                 tooltip: {
                     callbacks: {
                         label: function(context) {
