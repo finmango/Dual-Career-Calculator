@@ -233,9 +233,7 @@
     </div>
     <div class="section">
         <h3>Financial Impact of Career Decisions</h3>
-        <div style="height: 300px;">
-            <canvas id="financialImpactChart"></canvas>
-        </div>
+        <canvas id="financialImpactChart"></canvas>
         <div class="explanation">
             <p>This chart compares your current plan with two alternative scenarios over 15 years, including accumulated retirement savings with a conservative 5% annual return:</p>
             <ul>
@@ -279,7 +277,96 @@ function showPage(pageId) {
 }
 
 function calculateResults() {
-    // ... [Previous calculation code remains unchanged] ...
+    const isDINK = document.querySelector('input[name="familyType"]:checked').value === 'dink';
+    const salary1 = parseFloat(document.getElementById('salary1').value);
+    const salary2 = parseFloat(document.getElementById('salary2').value);
+    const workforceLeaveDuration1 = parseFloat(document.getElementById('workforceLeaveDuration1').value);
+    const workforceLeaveDuration2 = parseFloat(document.getElementById('workforceLeaveDuration2').value);
+    const additionalChildCareCost = isDINK ? 0 : parseFloat(document.getElementById('childCareCost').value);
+    const childCareYears = isDINK ? 0 : Math.min(parseInt(document.getElementById('childCareYears').value), 5);
+    const basicLivingExpenses = parseFloat(document.getElementById('basicLivingExpenses').value) * 12;
+    const federalTaxRate = parseFloat(document.getElementById('federalTaxRate').value) / 100;
+    const stateTaxRate = parseFloat(document.getElementById('stateTaxRate').value) / 100;
+    const localTaxRate = parseFloat(document.getElementById('localTaxRate').value) / 100;
+    const salaryGrowth = parseFloat(document.getElementById('salaryGrowth').value) / 100;
+    const childCareGrowth = parseFloat(document.getElementById('childCareGrowth').value) / 100;
+    const livingExpensesGrowth = parseFloat(document.getElementById('livingExpensesGrowth').value) / 100;
+    const retirementContribution1 = parseFloat(document.getElementById('retirementContribution1').value) / 100;
+    const employerMatch1 = parseFloat(document.getElementById('employerMatch1').value) / 100;
+    const retirementContribution2 = parseFloat(document.getElementById('retirementContribution2').value) / 100;
+    const employerMatch2 = parseFloat(document.getElementById('employerMatch2').value) / 100;
+
+    const baselineChildCareCosts = [14440, 14832, 15277, 15735, 16207, 20866, 21493, 22138, 22802, 23486, 24190, 24916, 25664, 26434, 27227];
+    const backToWorkYear = Math.max(workforceLeaveDuration1, workforceLeaveDuration2) + 1;
+    const conservativeReturnRate = 0.05; // 5% annual return on retirement savings
+
+    let results = '';
+    let currentScenarioTotal = 0;
+    let currentScenarioRetirementSavings = 0;
+    let continuousEmploymentTotal = 0;
+    let continuousEmploymentRetirementSavings = 0;
+    let dinkScenarioTotal = 0;
+    let dinkScenarioRetirementSavings = 0;
+
+    for (let year = 1; year <= 15; year++) {
+        let projectedSalary1 = salary1 * Math.pow(1 + salaryGrowth, year - 1);
+        let projectedSalary2 = salary2 * Math.pow(1 + salaryGrowth, year - 1);
+
+        // Adjust salaries for workforce leave
+        if (year <= workforceLeaveDuration1) projectedSalary1 = 0;
+        if (year <= workforceLeaveDuration2) projectedSalary2 = 0;
+        if (year > workforceLeaveDuration1 && year <= workforceLeaveDuration1 + 1) projectedSalary1 = salary1;
+        if (year > workforceLeaveDuration2 && year <= workforceLeaveDuration2 + 1) projectedSalary2 = salary2;
+
+        const grossIncome = projectedSalary1 + projectedSalary2;
+
+        let projectedChildCareCost = 0;
+        if (!isDINK) {
+            projectedChildCareCost = baselineChildCareCosts[year - 1];
+            if (year >= backToWorkYear && year < backToWorkYear + childCareYears && year <= 5) {
+                projectedChildCareCost += additionalChildCareCost * Math.pow(1 + childCareGrowth, year - backToWorkYear);
+            }
+        }
+
+        const projectedBasicLivingExpenses = basicLivingExpenses * Math.pow(1 + livingExpensesGrowth, year - 1);
+
+        const retirementSavings1 = projectedSalary1 * (retirementContribution1 + Math.min(retirementContribution1, employerMatch1));
+        const retirementSavings2 = projectedSalary2 * (retirementContribution2 + Math.min(retirementContribution2, employerMatch2));
+        const totalRetirementSavings = retirementSavings1 + retirementSavings2;
+
+        const taxableIncome = grossIncome - totalRetirementSavings;
+        const taxes = taxableIncome * (federalTaxRate + stateTaxRate + localTaxRate);
+
+        const netIncome = grossIncome - taxes - projectedChildCareCost - projectedBasicLivingExpenses - totalRetirementSavings;
+
+        currentScenarioTotal += netIncome;
+        currentScenarioRetirementSavings = (currentScenarioRetirementSavings + totalRetirementSavings) * (1 + conservativeReturnRate);
+
+        // Calculate continuous employment scenario
+        const continuousEmploymentSalary1 = salary1 * Math.pow(1 + salaryGrowth, year - 1);
+        const continuousEmploymentSalary2 = salary2 * Math.pow(1 + salaryGrowth, year - 1);
+        const continuousEmploymentGrossIncome = continuousEmploymentSalary1 + continuousEmploymentSalary2;
+        const continuousEmploymentTaxableIncome = continuousEmploymentGrossIncome - totalRetirementSavings;
+        const continuousEmploymentTaxes = continuousEmploymentTaxableIncome * (federalTaxRate + stateTaxRate + localTaxRate);
+        const continuousEmploymentNetIncome = continuousEmploymentGrossIncome - continuousEmploymentTaxes - projectedChildCareCost - projectedBasicLivingExpenses - totalRetirementSavings;
+        continuousEmploymentTotal += continuousEmploymentNetIncome;
+        continuousEmploymentRetirementSavings = (continuousEmploymentRetirementSavings + totalRetirementSavings) * (1 + conservativeReturnRate);
+
+        // Calculate DINK scenario
+        const dinkNetIncome = continuousEmploymentGrossIncome - continuousEmploymentTaxes - projectedBasicLivingExpenses - totalRetirementSavings;
+        dinkScenarioTotal += dinkNetIncome;
+        dinkScenarioRetirementSavings = (dinkScenarioRetirementSavings + totalRetirementSavings) * (1 + conservativeReturnRate);
+
+        results += `<tr>
+            <td>${year}</td>
+            <td>$${Math.round(grossIncome).toLocaleString()}</td>
+            <td>$${Math.round(taxes).toLocaleString()}</td>
+            <td>$${Math.round(projectedChildCareCost).toLocaleString()}</td>
+            <td>$${Math.round(projectedBasicLivingExpenses).toLocaleString()}</td>
+            <td>$${Math.round(totalRetirementSavings).toLocaleString()}</td>
+            <td>$${Math.round(netIncome).toLocaleString()}</td>
+        </tr>`;
+    }
 
     document.getElementById('resultsTable').getElementsByTagName('tbody')[0].innerHTML = results;
 
@@ -297,12 +384,12 @@ function calculateResults() {
                     Math.round(dinkScenarioTotal + dinkScenarioRetirementSavings)
                 ],
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.8)',
-                    'rgba(54, 162, 235, 0.8)',
-                    'rgba(255, 206, 86, 0.8)'
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(255, 206, 86, 0.6)'
                 ],
                 borderColor: [
-                    'rgba(255, 99, 132, 1)',
+                    'rgba(75, 192, 192, 1)',
                     'rgba(54, 162, 235, 1)',
                     'rgba(255, 206, 86, 1)'
                 ],
@@ -310,11 +397,9 @@ function calculateResults() {
             }]
         },
         options: {
-            indexAxis: 'y',
             responsive: true,
-            maintainAspectRatio: false,
             scales: {
-                x: {
+                y: {
                     beginAtZero: true,
                     ticks: {
                         callback: function(value) {
@@ -324,9 +409,6 @@ function calculateResults() {
                 }
             },
             plugins: {
-                legend: {
-                    display: false
-                },
                 tooltip: {
                     callbacks: {
                         label: function(context) {
@@ -334,8 +416,8 @@ function calculateResults() {
                             if (label) {
                                 label += ': ';
                             }
-                            if (context.parsed.x !== null) {
-                                label += '$' + context.parsed.x.toLocaleString();
+                            if (context.parsed.y !== null) {
+                                label += '$' + context.parsed.y.toLocaleString();
                             }
                             return label;
                         }
