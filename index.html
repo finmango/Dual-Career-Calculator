@@ -237,7 +237,7 @@
             <canvas id="financialImpactChart"></canvas>
         </div>
         <div class="explanation">
-            <p>This chart compares your current plan with two alternative scenarios over 15 years, including accumulated retirement savings with a conservative 5% annual return:</p>
+            <p>This chart compares your current plan with two alternative scenarios over 15 years, including accumulated retirement savings with a conservative 8% annual return:</p>
             <ul>
                 <li><strong>Current Plan:</strong> Your inputted scenario.</li>
                 <li><strong>Continuous Employment:</strong> Both partners work continuously, using childcare services.</li>
@@ -300,7 +300,7 @@ function calculateResults() {
 
     const baselineChildCareCosts = [14440, 14832, 15277, 15735, 16207, 20866, 21493, 22138, 22802, 23486, 24190, 24916, 25664, 26434, 27227];
     const backToWorkYear = Math.max(workforceLeaveDuration1, workforceLeaveDuration2) + 1;
-    const conservativeReturnRate = 0.05; // 5% annual return on retirement savings
+    const conservativeReturnRate = 0.08; // 8% annual return on retirement savings
 
     let results = '';
     let currentScenarioTotal = 0;
