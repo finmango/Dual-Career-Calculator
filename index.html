@@ -87,12 +87,8 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
         }
         .header { 
-            text-align: left; 
-            margin-bottom: 20px; 
-            background-color: #1976D2;
-            color: white;
-            padding: 20px;
-            border-radius: 4px;
+           text-align: left; 
+           margin-bottom: 20px; 
         }
         .logo { 
             max-width: 300px; 
@@ -100,6 +96,15 @@
             margin-bottom: 10px; 
             cursor: pointer; 
         }
+        }
+    .title-box {
+        background-color: #1976D2;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 4px;
+        display: inline-block;
+        margin-top: 10px;
+}
         .info-link { 
             font-size: 0.9em; 
             margin-bottom: 5px; 
@@ -126,11 +131,12 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <img src="logo.png" alt="FinMango and ModernHusbands Logo" class="logo" onclick="showPage('introPage')">
-        <h1 style="color: white;">Family Financial Planning Calculator</h1>
+   <div class="header">
+    <img src="logo.png" alt="FinMango and ModernHusbands Logo" class="logo" onclick="showPage('introPage')">
+    <div class="title-box">
+        <h1>Family Financial Planning Calculator</h1>
     </div>
-
+</div>
     <div id="introPage" class="page active">
         <h2>Financial Outlook for Couples</h2>
         <div class="explanation">
